@@ -13,7 +13,7 @@ export interface IUserLogin {
     _id: string;
     name: string;
     email: string;
-    role?: string;
+    role: TRole;
 }
 
 export interface ILogin {
@@ -21,10 +21,7 @@ export interface ILogin {
     user: IUserLogin
 }
 
-export interface IUserProfile {
-    _id: string;
-    name: string;
-    email: string;
+export interface IUserProfile extends IUserLogin {
     bio?: string;
     cover?: IImage;
     avatar?: IImage;
@@ -32,7 +29,6 @@ export interface IUserProfile {
     birthday: string;
     age: number;
     gender: TGender;
-    role: TRole;
     provider: TProvider;
     createdAt: string;
     updatedAt: string;

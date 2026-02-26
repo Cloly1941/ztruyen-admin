@@ -8,14 +8,14 @@ import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 // ** Routes
 import AppRoutes from "@/routes";
 
-// ** theme
-import {ThemeProvider} from "@/theme/ThemeProvider.tsx";
-
 // ** Component
 import Toast from "@/components/common/Toast.tsx";
 
 // ** Context
 import {AuthProvider} from "@/context/AuthContext.tsx";
+
+// ** theme
+import {ThemeCustomizerProvider} from "@/context/ThemeCustomizerContext.tsx";
 
 const queryClient = new QueryClient()
 
@@ -23,13 +23,13 @@ const App = () => {
     return (
         <HelmetProvider>
             <AuthProvider>
-                <ThemeProvider defaultTheme="light" storageKey="ztc-theme">
+                <ThemeCustomizerProvider>
                     <QueryClientProvider client={queryClient}>
                         <AppRoutes/>
                         <Toast/>
                         <ReactQueryDevtools initialIsOpen={false}/>
                     </QueryClientProvider>
-                </ThemeProvider>
+                </ThemeCustomizerProvider>
             </AuthProvider>
         </HelmetProvider>
     )

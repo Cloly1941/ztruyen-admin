@@ -5,7 +5,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 
 // ** Styles
-import './index.css'
+import './styles/index.css'
 
 // ** App
 import App from './App.tsx'

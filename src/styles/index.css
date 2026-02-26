@@ -1,0 +1,84 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import './theme.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+    }
+
+    html {
+        @apply overflow-x-hidden;
+    }
+
+    body {
+        @apply min-h-svh w-full bg-background text-foreground has-[div[data-variant='inset']]:bg-sidebar;
+    }
+
+    /* Override Radix scroll locking for sticky headers */
+    body[data-scroll-locked] {
+        overflow: unset !important;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    /* Prevent focus zoom on mobile devices */
+    @media screen and (max-width: 767px) {
+        input,
+        select,
+        textarea {
+            font-size: 16px !important;
+        }
+    }
+}
+
+@utility no-scrollbar {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+@layer utilities {
+    [data-slot='field-error'] {
+        @apply text-red-400;
+    }
+
+    /* Side bar */
+    [data-slot='sidebar-wrapper'] {
+        @apply bg-sidebar
+    }
+
+    [data-slot='sidebar-container'] {
+        @apply border-none py-2 pl-0.5
+    }
+
+    [data-slot='sidebar-inset'] {
+        @apply md:m-1.5 md:rounded-xl md:shadow-sm
+    }
+
+    /*  Dropdown  */
+    [data-slot="dropdown-menu-item"] {
+        @apply cursor-pointer
+    }
+
+    /*  Command  */
+    [data-slot="command-item"] {
+        @apply cursor-pointer
+    }
+
+    /*  Select  */
+    [data-slot="select-item"] {
+        @apply cursor-pointer
+    }
+}

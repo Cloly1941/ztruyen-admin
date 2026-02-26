@@ -1,8 +1,9 @@
 
-
 const Dashboard = () => {
     return (
-        <div></div>
+        <div className='h-[100vh] w-full'>
+
+        </div>
     )
 }
 

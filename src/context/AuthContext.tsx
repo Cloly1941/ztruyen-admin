@@ -2,18 +2,19 @@
 import {createContext, type ReactNode, useCallback, useEffect, useState} from "react";
 
 // ** Types
-import type {IUserLogin} from "@/types/backend";
+import type {IUserLogin, IUserProfile} from "@/types/backend";
 
 // ** Services
 import {UserService} from "@/services/user";
 import {CONFIG_LOCALSTORAGE} from "@/configs/local-storage";
 
+type TUser = IUserLogin | IUserProfile;
 
 interface TAuthContext {
     isAuthenticated: boolean;
     setIsAuthenticated: (v: boolean) => void;
-    setUser: (v: IUserLogin | null) => void;
-    user: IUserLogin | null;
+    setUser: (v: TUser | null) => void;
+    user: TUser | null;
     isAuthLoading: boolean;
     setIsAuthLoading: (v: boolean) => void;
     fetchProfile: () => Promise<void>;
@@ -31,7 +32,7 @@ export const AuthProvider = ({children}: TAuthProvider) => {
 
     // States
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<IUserLogin | null>(null);
+    const [user, setUser] = useState<TUser | null>(null);
     const [isAuthLoading, setIsAuthLoading] = useState(true);
 
     const fetchProfile = useCallback(async () => {
