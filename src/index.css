@@ -170,4 +170,13 @@
     body {
         @apply bg-background text-foreground;
     }
+    button {
+        @apply cursor-pointer;
+    }
+}
+
+@layer utilities {
+    [data-slot='field-error'] {
+        @apply text-red-400;
+    }
 }
