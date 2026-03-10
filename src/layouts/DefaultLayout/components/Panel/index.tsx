@@ -2,7 +2,7 @@ import {Popover, PopoverContent, PopoverDescription, PopoverHeader, PopoverTrigg
 import {Label} from "@/components/ui/label.tsx";
 import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {ToggleGroup, ToggleGroupItem} from "@/components/ui/toggle-group.tsx";
-import Button from "@/components/common/Button.tsx";
+import Button from "@/components/common/Button";
 import {Palette} from "lucide-react";
 import {
     type ColorMode,
@@ -64,7 +64,7 @@ const Panel = () => {
                                     <SelectTrigger className='w-full'>
                                         <SelectValue placeholder="Mặc định"/>
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent position='popper'>
                                         <SelectGroup>
                                             {themePresetOptions.map(t => (
                                                 <SelectItem value={t.value} key={t.value}>

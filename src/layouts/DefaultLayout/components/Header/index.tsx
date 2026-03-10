@@ -20,7 +20,7 @@ import Search from "@/layouts/DefaultLayout/components/Search";
 import Panel from "@/layouts/DefaultLayout/components/Panel";
 
 // ** Components
-import {ModeToggle} from "@/components/common/ModeToggle.tsx";
+import {ModeToggle} from "@/components/common/ModeToggle";
 
 // ** Icons
 import {BadgeCheck, Bell, LogOut} from "lucide-react";

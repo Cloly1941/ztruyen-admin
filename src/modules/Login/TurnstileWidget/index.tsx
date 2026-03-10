@@ -1,5 +1,3 @@
-'use client';
-
 // ** Theme
 import {useTheme} from "@/theme/ThemeProvider.tsx";
 

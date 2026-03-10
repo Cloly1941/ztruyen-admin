@@ -14,6 +14,6 @@ export type TLoginPayload = {
 }
 
 export const AuthService = {
-    login: (payload: TLoginPayload) => axios.post<IBackendRes<ILogin>>(CONFIG_API.AUTH.LOGIN, payload, {skipAuth: true}),
-    logout: () => axios.post<IBackendRes<string>>(CONFIG_API.AUTH.LOGOUT)
+    login: (payload: TLoginPayload) => axios.post<IBackendRes<ILogin>>(`${CONFIG_API.AUTH.INDEX}/${CONFIG_API.AUTH.LOGIN}`, payload, {skipAuth: true}),
+    logout: () => axios.post<IBackendRes<string>>(`${CONFIG_API.AUTH.INDEX}/${CONFIG_API.AUTH.LOGOUT}`)
 };

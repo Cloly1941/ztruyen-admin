@@ -21,6 +21,9 @@ import {
 import {useAuth} from "@/hooks/common/useAuth.ts";
 import type {IUserProfile} from "@/types/backend";
 
+// ** Config
+import {CONFIG_ROUTER} from "@/configs/router";
+
 // This is sample data.
 const data = {
     teams: [
@@ -39,15 +42,7 @@ const data = {
             items: [
                 {
                     title: "Danh sách người dùng",
-                    url: "#",
-                },
-                {
-                    title: "Thêm người dùng",
-                    url: "#",
-                },
-                {
-                    title: "Chỉnh sửa thông tin người dùng",
-                    url: "#",
+                    url: CONFIG_ROUTER.USER.INDEX,
                 },
                 {
                     title: "Người dùng bị cấm",
@@ -63,11 +58,7 @@ const data = {
                 {
                     title: "Danh sách khung avatar",
                     url: "#",
-                },
-                {
-                    title: "Thêm khung avatar",
-                    url: "#",
-                },
+                }
             ],
         },
         {

@@ -22,7 +22,7 @@ const DefaultLayout = () => {
                 onOpenChange={(open) => setSidebarMode(open ? "default" : "icon")}
             >
                 <AppSidebar/>
-                <SidebarInset>
+                <SidebarInset className='min-w-0'>
                     <Header/>
                     <div className='p-4'>
                         <Outlet/>

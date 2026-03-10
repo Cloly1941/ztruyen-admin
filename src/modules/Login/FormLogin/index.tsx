@@ -15,9 +15,9 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 
 // ** Components
-import Button from "@/components/common/Button.tsx";
+import Button from "@/components/common/Button";
 import InputPassword from "@/components/common/InputPassword";
-import TurnstileWidget from "@/modules/Login/TurnstileWidget.tsx";
+import TurnstileWidget from "@/modules/Login/TurnstileWidget";
 
 // ** Shadcn ui
 import {Field, FieldError} from "@/components/ui/field";
@@ -29,9 +29,7 @@ import {useAuth} from "@/hooks/common/useAuth.ts";
 
 // ** Config
 import {CONFIG_ROLE} from "@/configs/role";
-import {CONFIG_ROUTER} from "@/configs/router";
 import {MESSAGE_AUTH} from "@/configs/messages/auth";
-import {CONFIG_LOCALSTORAGE} from "@/configs/local-storage";
 
 const formSchema = z.object({
     email: z.string().email({message: 'Email không hợp lệ'}),
@@ -46,7 +44,7 @@ const FormLogin = () => {
 
     const [cfToken, setCfToken] = useState<string | null>(null);
 
-    const {setIsAuthenticated, setUser, isAuthenticated, user} = useAuth()
+    const {isAuthenticated, user} = useAuth()
 
     const isLogin = isAuthenticated && user?.role === CONFIG_ROLE.ADMIN
 
@@ -56,7 +54,7 @@ const FormLogin = () => {
         }
     }, [isLogin, navigate])
 
-    const {mutateAsync: trigger, isPending} = useLogin();
+    const {mutateAsync: login, isPending} = useLogin();
 
     const form = useForm<TLoginForm>({
         resolver: zodResolver(formSchema),
@@ -73,26 +71,11 @@ const FormLogin = () => {
             return;
         }
 
-        const res = await trigger({
+        await login({
             email: values.email,
             password: values.password,
             cfToken,
         });
-
-        if (res.data) {
-            if (res.data.user.role === CONFIG_ROLE.ADMIN) {
-                setIsAuthenticated(true);
-                setUser(res.data.user);
-                localStorage.setItem(CONFIG_LOCALSTORAGE.ACCESS_TOKEN, res.data.access_token);
-                toast.success(res.message);
-                navigate(CONFIG_ROUTER.HOME);
-            } else {
-                toast.error(MESSAGE_AUTH.FORBIDDEN)
-                navigate(CONFIG_ROUTER.FORBIDDEN)
-            }
-        } else {
-            toast.error(res.message && Array.isArray(res.message) ? res.message[0] : res.message)
-        }
     }
 
     return (

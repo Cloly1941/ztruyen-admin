@@ -7,6 +7,9 @@
 @layer base {
     * {
         @apply border-border outline-ring/50;
+    }
+
+    * {
         scrollbar-width: thin;
         scrollbar-color: var(--border) transparent;
     }
@@ -33,7 +36,7 @@
         input,
         select,
         textarea {
-            font-size: 16px !important;
+            font-size: 14px !important;
         }
     }
 }
@@ -72,6 +75,10 @@
         @apply cursor-pointer
     }
 
+    .dropdown-table[data-slot="dropdown-menu-item"] {
+        @apply p-0
+    }
+
     /*  Command  */
     [data-slot="command-item"] {
         @apply cursor-pointer
@@ -80,5 +87,21 @@
     /*  Select  */
     [data-slot="select-item"] {
         @apply cursor-pointer
+    }
+
+    /*  Dialog  */
+    [data-slot="dialog-content"] {
+        @apply max-h-[80vh] overflow-y-auto;
+    }
+
+    /*  End Popover  */
+    [data-slot="avatar-image"] {
+        @apply object-cover;
+    }
+}
+
+@layer components {
+    .dialog-trigger {
+        @apply px-2 py-1.5 cursor-pointer w-full;
     }
 }

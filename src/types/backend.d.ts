@@ -1,8 +1,8 @@
-type TGender = 'male' | 'female' | 'lgbt';
+export type TGender = 'male' | 'female' | 'lgbt';
 
 type TRole = 'admin' | 'author' | 'user';
 
-type TProvider = 'local' | 'google' | 'facebook';
+export type TProvider = 'local' | 'google' | 'facebook';
 
 interface IImage {
     _id: string;
@@ -32,4 +32,21 @@ export interface IUserProfile extends IUserLogin {
     provider: TProvider;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface IUser extends IUserProfile {
+    isDeleted: boolean;
+}
+
+export interface IUserCreated {
+    _id: string;
+    createdAt: string;
+}
+
+export interface IUserUpdated {
+    acknowledged: boolean;
+    modifiedCount: number;
+    upsertedId: string;
+    upsertedCount: number;
+    matchedCount: number;
 }

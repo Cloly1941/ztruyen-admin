@@ -9,7 +9,7 @@ import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import AppRoutes from "@/routes";
 
 // ** Component
-import Toast from "@/components/common/Toast.tsx";
+import Toast from "@/components/common/Toast";
 
 // ** Context
 import {AuthProvider} from "@/context/AuthContext.tsx";

@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 import {Helmet} from "react-helmet-async";
 
 // ** Component
-import Button from "@/components/common/Button.tsx";
+import Button from "@/components/common/Button";
 
 // ** Config
 import {CONFIG_ROUTER} from "@/configs/router";

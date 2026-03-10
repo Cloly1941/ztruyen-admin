@@ -14,7 +14,7 @@ import DefaultLayout from "@/layouts/DefaultLayout";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import Forbidden from "@/pages/Forbidden";
-
+import ListUser from "@/pages/User";
 
 const AppRoutes = () => {
     return (
@@ -28,6 +28,7 @@ const AppRoutes = () => {
                     }
                 >
                     <Route path={CONFIG_ROUTER.HOME} element={<Dashboard/>}/>
+                    <Route path={CONFIG_ROUTER.USER.INDEX} element={<ListUser/>}/>
                 </Route>
                 <Route path={CONFIG_ROUTER.LOGIN} element={<Login/>}/>
                 <Route path='/403' element={<Forbidden/>}/>

@@ -2,7 +2,7 @@
 import { Helmet } from 'react-helmet-async';
 
 // ** Module components
-import FormLogin from "@/modules/Login/FormLogin.tsx";
+import FormLogin from "@/modules/Login/FormLogin";
 
 const Login = () => {
     return (

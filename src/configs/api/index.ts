@@ -2,28 +2,30 @@ export const BASE_URL = import.meta.env.VITE_API_URL
 
 export const CONFIG_API = {
     AUTH: {
-        LOGIN: 'auth/login',
-        LOGOUT: 'auth/logout',
+        INDEX: 'auth',
+        LOGIN: 'login',
+        LOGOUT: 'logout',
     },
     UPLOAD: {
-        ONE: '/upload-telegram/upload',
-        MULTI: '/upload-telegram/upload-multiple',
-        IMAGE: '/images'
+        ONE: 'upload',
+        MULTI: 'upload-multiple',
+        IMAGE: 'images'
     },
     USER: {
         INDEX: 'user',
-        PROFILE: 'user/profile',
-        DETAIL: 'user/detail',
-        DELETE: 'user/delete',
-        DELETE_MULTI: 'user/delete-multi',
-        UPDATE: 'user/update',
-        EXPORT: 'user/export',
-        EXPORT_TEMPLATE: 'user/template',
-        IMPORT: 'user/import',
-        TRASH: 'user/trash',
-        HARD_DELETE: 'user/trash/delete',
-        HARD_DELETE_MULTI: 'user/trash/delete-multi',
-        RESTORE: 'user/restore',
-        RESTORE_MULTI: 'user/restore-multi',
+        PROFILE: 'profile',
+        DETAIL: 'detail',
+        DELETE: 'delete',
+        DELETE_MULTI: 'delete-multi',
+        UPDATE: 'update',
+        EXPORT: 'export',
+        EXPORT_TEMPLATE: 'template',
+        IMPORT: 'import',
+        TRASH: 'trash',
+        HARD_DELETE: 'trash/delete',
+        HARD_DELETE_MULTI: 'trash/delete-multi',
+        RESTORE: 'restore',
+        RESTORE_MULTI: 'restore-multi',
+        CHANGE_PASSWORD: 'change-password',
     }
 } as const
