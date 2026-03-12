@@ -44,10 +44,20 @@ export function NavMain({
 }) {
 
     const {pathname} = useLocation()
-
     const {sidebarMode} = useThemeCustomizer()
-
     const isMobile = useIsMobile()
+
+    const isActive = (url: string) => {
+        if (url === "#") return false
+        if (pathname === url) return true
+
+        const urlSegments = url.split("/").filter(Boolean)
+        const pathSegments = pathname.split("/").filter(Boolean)
+         
+        if (urlSegments.length !== pathSegments.length) return false
+
+        return urlSegments.every((seg, i) => seg === pathSegments[i])
+    }
 
     return (
         <SidebarGroup>
@@ -55,9 +65,25 @@ export function NavMain({
             <SidebarMenu>
                 {items.map((item) => {
 
-                    const isParentActive = item.items?.some(
-                        (sub) => sub.url !== "#" && pathname.startsWith(sub.url)
-                    )
+                    const isParentActive = item.items?.some((sub) => isActive(sub.url))
+
+                    if (item.items?.length === 1) {
+                        const singleItem = item.items[0]
+                        return (
+                            <SidebarMenuItem key={item.title}>
+                                <SidebarMenuButton
+                                    asChild
+                                    isActive={isActive(singleItem.url)}
+                                    tooltip={item.title}
+                                >
+                                    <Link to={singleItem.url}>
+                                        {item.icon && <item.icon/>}
+                                        <span>{item.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )
+                    }
 
                     if (sidebarMode === 'default' || isMobile) return (
                         <Collapsible
@@ -66,7 +92,7 @@ export function NavMain({
                             defaultOpen={isParentActive}
                             className="group/collapsible"
                         >
-                            <SidebarMenuItem key={item.title}>
+                            <SidebarMenuItem>
                                 <CollapsibleTrigger asChild>
                                     <SidebarMenuButton tooltip={item.title}>
                                         {item.icon && <item.icon/>}
@@ -77,22 +103,15 @@ export function NavMain({
                                 </CollapsibleTrigger>
                                 <CollapsibleContent>
                                     <SidebarMenuSub>
-                                        {item.items?.map((subItem) => {
-                                            const isSubActive =
-                                                subItem.url !== "#" &&
-                                                pathname.startsWith(subItem.url)
-                                            return (
-                                                (
-                                                    <SidebarMenuSubItem key={subItem.title}>
-                                                        <SidebarMenuSubButton asChild isActive={isSubActive}>
-                                                            <Link to={subItem.url}>
-                                                                <span>{subItem.title}</span>
-                                                            </Link>
-                                                        </SidebarMenuSubButton>
-                                                    </SidebarMenuSubItem>
-                                                )
-                                            )
-                                        })}
+                                        {item.items?.map((subItem) => (
+                                            <SidebarMenuSubItem key={subItem.title}>
+                                                <SidebarMenuSubButton asChild isActive={isActive(subItem.url)}>
+                                                    <Link to={subItem.url}>
+                                                        <span>{subItem.title}</span>
+                                                    </Link>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                        ))}
                                     </SidebarMenuSub>
                                 </CollapsibleContent>
                             </SidebarMenuItem>
@@ -115,20 +134,16 @@ export function NavMain({
                                     <DropdownMenuLabel className="text-muted-foreground text-xs">
                                         {item.title}
                                     </DropdownMenuLabel>
-                                    {item.items?.map((sub) => {
-                                        const isSubActive =
-                                            sub.url !== "#" && pathname.startsWith(sub.url)
-                                        return (
-                                            <DropdownMenuItem key={sub.title} asChild>
-                                                <Link
-                                                    to={sub.url}
-                                                    className={isSubActive ? "text-primary font-medium" : ""}
-                                                >
-                                                    {sub.title}
-                                                </Link>
-                                            </DropdownMenuItem>
-                                        )
-                                    })}
+                                    {item.items?.map((sub) => (
+                                        <DropdownMenuItem key={sub.title} asChild>
+                                            <Link
+                                                to={sub.url}
+                                                className={isActive(sub.url) ? "text-primary font-medium" : ""}
+                                            >
+                                                {sub.title}
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    ))}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </SidebarMenuItem>

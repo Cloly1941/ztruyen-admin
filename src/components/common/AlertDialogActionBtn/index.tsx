@@ -34,7 +34,6 @@ export type TMultipleAction<T> = {
 
 type TAlertDialogAction<T> = TUseActionMutation<T> & {
     action?: TAction
-    count?: number
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSuccess?: () => void;
@@ -43,7 +42,7 @@ type TAlertDialogAction<T> = TUseActionMutation<T> & {
 
 const AlertDialogActionBtn = <T, >(props: TAlertDialogAction<T>) => {
 
-    const {count, action = "delete", queryKey, open, onOpenChange, onSuccess, title} = props
+    const { action = "delete", queryKey, open, onOpenChange, onSuccess, title} = props
 
     const config = actionConfig[action]
 
@@ -66,9 +65,7 @@ const AlertDialogActionBtn = <T, >(props: TAlertDialogAction<T>) => {
                     <AlertDialogHeader>
                         <AlertDialogTitle>{config.title} {title}</AlertDialogTitle>
                         <AlertDialogDescription>
-                            {count && action.includes("multiple")
-                                && `${count}`
-                            } {config.desc}
+                            {config.desc}
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

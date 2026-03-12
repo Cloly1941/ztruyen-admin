@@ -55,6 +55,32 @@ export const UserService = {
         return await axios.delete<IBackendRes<void>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.DELETE_MULTI}`, {data: {ids}})
     },
 
+    //  trash
+    listTrash: async (params: TQueryParams) => {
+        const query = buildQueryString(params)
+        return await axios.get<IBackendRes<IModelPaginate<IUser>>>(
+            `${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.TRASH}?${query}`
+        );
+    },
+    detailTrash: async (id: string) => {
+        return await axios.get<IBackendRes<IUser>>(
+            `${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.TRASH}/${id}`
+        );
+    },
+
+    delete: async (id: string) => {
+        return await axios.delete<IBackendRes<void>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.TRASH}/${CONFIG_API.USER.DELETE}/${id}`)
+    },
+    multiDelete: async (ids: string[]) => {
+        return await axios.delete<IBackendRes<void>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.TRASH}/${CONFIG_API.USER.DELETE_MULTI}`, {data: {ids}})
+    },
+    restore: async (id: string) => {
+        return await axios.patch<IBackendRes<void>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.RESTORE}/${id}`)
+    },
+    multiRestore: async (ids: string[]) => {
+        return await axios.patch<IBackendRes<void>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.RESTORE_MULTI}`, {ids})
+    },
+
     // import/export
     import: async (file: File) => {
         const formData = new FormData();

@@ -4,6 +4,9 @@ export const CONFIG_ROUTER = {
     LOGIN: '/login',
     USER: {
         INDEX: '/users',
-        CREATE: '/create',
+        BAN: '/ban',
+    },
+    FRAME: {
+        INDEX: '/frames',
     }
 } as const

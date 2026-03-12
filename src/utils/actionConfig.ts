@@ -30,7 +30,7 @@ export const actionConfig: Record<TAction, { label: string; title: string; desc:
     "ban-multiple": {
         label: "Cấm",
         title: "Xác nhận cấm",
-        desc: "người dùng được chọn sẽ bị cấm truy cập hệ thống."
+        desc: "Người dùng được chọn sẽ bị cấm truy cập hệ thống."
     },
     ban: {
         label: "Cấm",

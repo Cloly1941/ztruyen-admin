@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 
-import {Columns2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2} from "lucide-react";
+import {Columns2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, ArchiveRestore} from "lucide-react";
 import {type ReactNode, useState} from "react";
 import ExportButton from "@/components/common/ExportButton";
 import DialogActionBtn from "@/components/common/DialogActionBtn";
@@ -32,8 +32,8 @@ type TDataTableServerProps<T> = {
     searchField: string;
     title?: string
     onExport?: (params: TQueryParams) => void
-    contentAddBtn: (close: () => void) => ReactNode
-    onImport: (close: () => void) => ReactNode
+    contentAddBtn?: (close: () => void) => ReactNode
+    onImport?: (close: () => void) => ReactNode
     onDeleteMultiple?: (
         selectedIds: string[],
         onSuccess: () => void,
@@ -42,6 +42,12 @@ type TDataTableServerProps<T> = {
     ) => ReactNode;
     deleteMultipleLabel?: string;
     deleteMultipleSubLabel: string;
+    onRestoreMultiple: (
+        selectedIds: string[],
+        onSuccess: () => void,
+        open: boolean,
+        onOpenChange: (open: boolean) => void,
+    ) => ReactNode;
 }
 
 const DataTableServer = <T, >({
@@ -58,7 +64,8 @@ const DataTableServer = <T, >({
                                   onImport,
                                   onDeleteMultiple,
                                   deleteMultipleLabel = "Xoá",
-                                  deleteMultipleSubLabel
+                                  deleteMultipleSubLabel,
+                                  onRestoreMultiple
                               }: TDataTableServerProps<T>) => {
     const {
         data, pageCount, total, isLoading,
@@ -90,6 +97,7 @@ const DataTableServer = <T, >({
     const [addOpen, setAddOpen] = useState(false)
     const [importOpen, setImportOpen] = useState(false)
     const [deleteMultiOpen, setDeleteMultiOpen] = useState(false)
+    const [restoreMultiOpen, setRestoreMultiOpen] = useState(false)
 
     const selectedIds = table
         .getSelectedRowModel()
@@ -105,11 +113,27 @@ const DataTableServer = <T, >({
                 <div className='flex gap-2'>
                     {selectedIds.length > 1 && (
                         <>
+                            {/* Restore Multi */}
+                            {
+                                onRestoreMultiple && (
+                                    <>
+                                        <Button
+                                            variant='secondary'
+                                            onClick={() => setRestoreMultiOpen(true)}
+                                        >
+                                            <ArchiveRestore/>
+                                            Khôi phục {selectedIds.length} {title}
+                                        </Button>
+                                        {onRestoreMultiple?.(selectedIds, clearSelection, restoreMultiOpen, setRestoreMultiOpen)}
+                                    </>
+                                )
+                            }
+
+                            {/* Delete Multi */}
                             <Button
-                                variant="destructive"
                                 onClick={() => setDeleteMultiOpen(true)}
                             >
-                                <Trash2 className="size-4"/>
+                                <Trash2/>
                                 {deleteMultipleLabel} {selectedIds.length} {deleteMultipleSubLabel}
                             </Button>
                             {onDeleteMultiple?.(selectedIds, clearSelection, deleteMultiOpen, setDeleteMultiOpen)}
@@ -129,12 +153,13 @@ const DataTableServer = <T, >({
                             onExport={onExport}
                             params={params}
                         />}
-                    <DialogActionBtn
-                        title={title}
-                        render={contentAddBtn}
-                        open={addOpen}
-                        onOpenChange={setAddOpen}
-                    />
+                    {contentAddBtn && (
+                        <DialogActionBtn
+                            title={title}
+                            render={contentAddBtn}
+                            open={addOpen}
+                            onOpenChange={setAddOpen}
+                        />)}
                 </div>
             </div>
 

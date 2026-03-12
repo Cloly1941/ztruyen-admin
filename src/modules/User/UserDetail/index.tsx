@@ -20,12 +20,6 @@ import {cn} from "@/lib/utils.ts";
 // ** Type
 import type {IUser} from "@/types/backend";
 
-// ** Service
-import {UserService} from "@/services/user";
-
-// ** Config
-import {CONFIG_QUERY_KEY} from "@/configs/query-key";
-
 type TListDetail = {
     key: string;
     value: string | number | undefined;
@@ -33,13 +27,15 @@ type TListDetail = {
 
 type TUserDetail = {
     id: string;
+    queryKey: unknown[];
+    api: () => Promise<IBackendRes<IUser>>;
 }
 
-const UserDetail = ({id}: TUserDetail) => {
+const UserDetail = ({id, api, queryKey}: TUserDetail) => {
 
     const {data, isLoading, error} = useGetMethod<IUser>({
-        api: () => UserService.detail(id),
-        key: [CONFIG_QUERY_KEY.USER.DETAIL, id],
+        api,
+        key: queryKey,
         enabled: !!id && !!open
     })
 

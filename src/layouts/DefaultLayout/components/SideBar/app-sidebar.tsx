@@ -46,7 +46,7 @@ const data = {
                 },
                 {
                     title: "Người dùng bị cấm",
-                    url: "#",
+                    url: `${CONFIG_ROUTER.USER.INDEX}${CONFIG_ROUTER.USER.BAN}`,
                 },
             ],
         },
@@ -57,7 +57,7 @@ const data = {
             items: [
                 {
                     title: "Danh sách khung avatar",
-                    url: "#",
+                    url: `${CONFIG_ROUTER.FRAME.INDEX}`,
                 }
             ],
         },

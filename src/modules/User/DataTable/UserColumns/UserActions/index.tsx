@@ -10,6 +10,12 @@ import UpdateAvatarForm from "@/modules/User/UpdateAvatarForm";
 import UserUpdateForm from "@/modules/User/UserUpdateForm";
 import UserDetail from "@/modules/User/UserDetail";
 
+// ** Service
+import {UserService} from "@/services/user";
+
+// ** Config
+import {CONFIG_QUERY_KEY} from "@/configs/query-key";
+
 export type TActionItem = {
     key: string
     show?: boolean
@@ -27,7 +33,12 @@ export const getUserActions = (userId: string, provider?: string): TActionItem[]
                     action="detail"
                     title="người dùng"
                     open={open} onOpenChange={onOpenChange}
-                    render={() => <UserDetail id={userId}/>}
+                    render={() =>
+                        <UserDetail
+                            id={userId}
+                            queryKey={[CONFIG_QUERY_KEY.USER.DETAIL, userId]}
+                            api={() => UserService.detail(userId)}
+                        />}
                 />
             ),
         },

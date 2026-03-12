@@ -22,8 +22,6 @@ export const CONFIG_API = {
         EXPORT_TEMPLATE: 'template',
         IMPORT: 'import',
         TRASH: 'trash',
-        HARD_DELETE: 'trash/delete',
-        HARD_DELETE_MULTI: 'trash/delete-multi',
         RESTORE: 'restore',
         RESTORE_MULTI: 'restore-multi',
         CHANGE_PASSWORD: 'change-password',
