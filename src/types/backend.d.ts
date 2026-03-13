@@ -25,6 +25,7 @@ interface IImage {
 }
 
 // Auth & User
+
 export interface IUserLogin {
     _id: string;
     name: string;
@@ -41,7 +42,7 @@ export interface IUserProfile extends IUserLogin {
     bio?: string;
     cover?: IImage;
     avatar?: IImage;
-    avatar_frame?: IImage;
+    avatar_frame?: IFrame;
     birthday: string;
     age: number;
     gender: TGender;

@@ -28,13 +28,16 @@ import {getUserActions} from "@/modules/User/DataTable/UserColumns/UserActions";
 type TDropdownAction = {
     userId: string;
     provider: string
+    avatarUrl?: string;
+    avatarName?: string;
+    frameId?: string;
 }
 
-const DropdownAction = ({userId, provider}: TDropdownAction) => {
+const DropdownAction = ({userId, provider, avatarName, avatarUrl, frameId}: TDropdownAction) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [activeDialog, setActiveDialog] = useState<string | null>(null);
 
-    const actions = getUserActions(userId, provider);
+    const actions = getUserActions(userId, provider, avatarName, avatarUrl, frameId);
 
     return (
         <>

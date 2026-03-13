@@ -13,7 +13,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 
 // ** Layout component
 import Search from "@/layouts/DefaultLayout/components/Search";
@@ -21,6 +20,7 @@ import Panel from "@/layouts/DefaultLayout/components/Panel";
 
 // ** Components
 import {ModeToggle} from "@/components/common/ModeToggle";
+import AvatarWithFrame from "@/components/common/AvatarWithFrame";
 
 // ** Icons
 import {BadgeCheck, Bell, LogOut} from "lucide-react";
@@ -54,10 +54,12 @@ const Header = () => {
                     />
                     <DropdownMenu>
                         <DropdownMenuTrigger>
-                            <Avatar>
-                                <AvatarImage src={user?.avatar?.url || "https://github.com/shadcn.png"} alt={user?.name}/>
-                                <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
+                            <AvatarWithFrame
+                                avatarUrl={user?.avatar?.url}
+                                avatarName={user?.name}
+                                frameUrl={user?.avatar_frame?.image?.url}
+                                frameName={user?.avatar_frame?.name}
+                            />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent
                             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
@@ -66,10 +68,13 @@ const Header = () => {
                             <DropdownMenuGroup>
                                 <DropdownMenuLabel>
                                     <div className='flex items-center gap-2 text-left text-sm'>
-                                        <Avatar>
-                                            <AvatarImage src={user?.avatar?.url || "https://github.com/shadcn.png"} alt={user?.name}/>
-                                            <AvatarFallback>{user?.name.charAt(0)}</AvatarFallback>
-                                        </Avatar>
+                                        <AvatarWithFrame
+                                            className='size-6 ml-1 mr-2'
+                                            avatarUrl={user?.avatar?.url}
+                                            avatarName={user?.name}
+                                            frameUrl={user?.avatar_frame?.image?.url}
+                                            frameName={user?.avatar_frame?.name}
+                                        />
                                         <div className='grid flex-1 text-left text-sm leading-tight'>
                                             <span className='truncate font-semibold'>{user?.name}</span>
                                             <span
@@ -95,8 +100,8 @@ const Header = () => {
                                 <DropdownMenuSeparator/>
                                 <Link to='/'>
                                     <DropdownMenuItem>
-                                        <LogOut/>
-                                        Đăng xuất
+                                        <LogOut className='text-red-500'/>
+                                        <span className='text-red-500 hover:text-red-500'>Đăng xuất</span>
                                     </DropdownMenuItem>
                                 </Link>
                             </DropdownMenuGroup>

@@ -3,7 +3,6 @@ import type {ColumnDef} from "@tanstack/react-table"
 
 // ** Shadcn ui
 import {Checkbox} from "@/components/ui/checkbox"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 
 // ** Types
 import type {IImage, IUser, TProvider} from "@/types/backend";
@@ -20,6 +19,7 @@ import DropdownAction from "@/modules/User/DataTable/UserColumns/DropdownAction"
 
 // ** Component
 import {DataTableColumnHeader} from "@/components/common/DataTableColumnHeader";
+import AvatarWithFrame from "@/components/common/AvatarWithFrame";
 
 export const UserColumns: ColumnDef<IUser>[] = [
     // Checkbox
@@ -45,15 +45,17 @@ export const UserColumns: ColumnDef<IUser>[] = [
         accessorKey: "avatar",
         header: "Ảnh đại diện",
         cell: ({row}) => {
+            const data = row.original
+            const frame = data.avatar_frame
             const avatar = row.getValue<IImage | undefined>("avatar")
             return (
-                <div className='ml-2'>
-                    <Avatar>
-                        <AvatarImage src={avatar?.url} alt={row.getValue("name")}/>
-                        <AvatarFallback>
-                            {row.getValue<string>("name")?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
+                <div className='ml-2 my-3'>
+                    <AvatarWithFrame
+                        avatarName={row.getValue<string>("name")}
+                        avatarUrl={avatar?.url}
+                        frameName={frame?.name}
+                        frameUrl={frame?.image.url}
+                    />
                 </div>
             )
         }
@@ -122,8 +124,12 @@ export const UserColumns: ColumnDef<IUser>[] = [
         id: "actions",
         cell: ({row}) => {
             const data = row.original
-            const userId = data._id
-            return <DropdownAction userId={userId} provider={data.provider}/>
+
+            return <DropdownAction
+                userId={data._id} provider={data.provider}
+                avatarUrl={data.avatar?.url} avatarName={data.name}
+                frameId={data.avatar_frame?._id}
+            />
         },
     },
 ]

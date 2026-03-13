@@ -4,8 +4,10 @@ import {useEffect} from "react";
 // ** React hot toast
 import toast from "react-hot-toast";
 
+// ** Component
+import AvatarWithFrame from "@/components/common/AvatarWithFrame";
+
 // ** Shadcn ui
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Separator} from "@/components/ui/separator.tsx";
 
 // ** Hook
@@ -81,22 +83,20 @@ const UserDetail = ({id, api, queryKey}: TUserDetail) => {
                 userDetail?.cover?.url
                     ? "bg-cover bg-center"
                     : "bg-gradient-to-r from-blue-400 to-blue-300"
-                )}
+            )}
                  style={
                      userDetail?.cover?.url
                          ? {backgroundImage: `url(${userDetail.cover.url})`}
                          : undefined
                  }>
                 <div className="flex items-baseline gap-4 absolute -bottom-[16%] left-[5%]">
-                    <Avatar className='size-12'>
-                        <AvatarImage
-                            src={userDetail?.avatar?.url || "https://github.com/shadcn.png"}
-                            alt={userDetail.name}
-                        />
-                        <AvatarFallback className="text-lg font-semibold">
-                            {userDetail.name.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
+                    <AvatarWithFrame
+                        classAvatar='size-12'
+                        frameUrl={userDetail.avatar_frame?.image.url}
+                        frameName={userDetail.avatar_frame?.name}
+                        avatarUrl={userDetail?.avatar?.url}
+                        avatarName={userDetail?.name}
+                    />
                     <p className="font-semibold leading-none">{userDetail.name}</p>
                 </div>
             </div>

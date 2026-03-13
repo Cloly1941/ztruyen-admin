@@ -23,6 +23,10 @@ import type {TChangePasswordFormPayload} from "@/modules/User/ChangePasswordForm
 
 export const UserService = {
     profile: () => axios.get<IBackendRes<IUserProfile>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.PROFILE}`),
+    profileFrame: async (frameId: string) => {
+        return await axios.patch<IBackendRes<IUserUpdated>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.PROFILE}/${CONFIG_API.USER.FRAME}`, {avatar_frame: frameId})
+    },
+
     list: async (params: TQueryParams) => {
         const query = buildQueryString(params)
         return await axios.get<IBackendRes<IModelPaginate<IUser>>>(
@@ -42,6 +46,9 @@ export const UserService = {
     },
     avatar: async (id: string, avatar: string) => {
         return await axios.patch<IBackendRes<IUserUpdated>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.UPDATE}/${id}`, {avatar})
+    },
+    frame: async (id: string, frameId: string) => {
+        return await axios.patch<IBackendRes<void>>(`${CONFIG_API.USER.INDEX}/${CONFIG_API.USER.FRAME}/${id}`, {avatar_frame: frameId})
     },
 
     changePassword: async (id: string, payload: TChangePasswordFormPayload) => {

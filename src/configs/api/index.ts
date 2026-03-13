@@ -29,6 +29,7 @@ export const CONFIG_API = {
         DETAIL: 'detail',
         DELETE: 'delete',
         DELETE_MULTI: 'delete-multi',
+        FRAME: 'frame',
         UPDATE: 'update',
         EXPORT: 'export',
         EXPORT_TEMPLATE: 'template',

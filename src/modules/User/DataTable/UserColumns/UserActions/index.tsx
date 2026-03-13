@@ -9,6 +9,7 @@ import ChangePasswordForm from "@/modules/User/ChangePasswordForm";
 import UpdateAvatarForm from "@/modules/User/UpdateAvatarForm";
 import UserUpdateForm from "@/modules/User/UserUpdateForm";
 import UserDetail from "@/modules/User/UserDetail";
+import UpdateFrameForm from "@/modules/User/UpdateFrameForm";
 
 // ** Service
 import {UserService} from "@/services/user";
@@ -23,7 +24,7 @@ export type TActionItem = {
     renderDialog: (open: boolean, onOpenChange: (v: boolean) => void) => ReactNode
 }
 
-export const getUserActions = (userId: string, provider?: string): TActionItem[] => {
+export const getUserActions = (userId: string, provider?: string, avatarName?: string, avatarUrl?: string, frameId?: string): TActionItem[] => {
     return [
         {
             key: "detail",
@@ -64,6 +65,21 @@ export const getUserActions = (userId: string, provider?: string): TActionItem[]
                     title="ảnh đại diện"
                     open={open} onOpenChange={onOpenChange}
                     render={(close) => <UpdateAvatarForm onSuccess={close} id={userId}/>}
+                />
+            ),
+        },
+        {
+            key: "frame",
+            label: "Cập nhật khung",
+            renderDialog: (open, onOpenChange) => (
+                <DialogActionBtn
+                    action="edit"
+                    title="khung"
+                    open={open} onOpenChange={onOpenChange}
+                    render={(close) => <UpdateFrameForm
+                        onSuccess={close} id={userId}
+                        avatarName={avatarName} avatarUrl={avatarUrl}
+                        frameId={frameId}/>}
                 />
             ),
         },
