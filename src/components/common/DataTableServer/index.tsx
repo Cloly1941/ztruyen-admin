@@ -42,7 +42,7 @@ type TDataTableServerProps<T> = {
     ) => ReactNode;
     deleteMultipleLabel?: string;
     deleteMultipleSubLabel: string;
-    onRestoreMultiple: (
+    onRestoreMultiple?: (
         selectedIds: string[],
         onSuccess: () => void,
         open: boolean,
@@ -106,7 +106,7 @@ const DataTableServer = <T, >({
     const clearSelection = () => table.resetRowSelection()
 
     return (
-        <>
+        <div className='space-y-4'>
             {/* Header */}
             <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-3'>
                 {title && <h1 className='text-2xl font-bold tracking-tight'>Danh sách {title}</h1>}
@@ -365,7 +365,7 @@ const DataTableServer = <T, >({
                 </span>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

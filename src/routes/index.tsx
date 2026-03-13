@@ -16,6 +16,7 @@ import Dashboard from "@/pages/Dashboard";
 import Forbidden from "@/pages/Forbidden";
 import ListUser from "@/pages/User";
 import BannedUser from "@/pages/User/Banned";
+import ListFrame from "@/pages/Frame";
 
 const AppRoutes = () => {
     return (
@@ -31,6 +32,7 @@ const AppRoutes = () => {
                     <Route path={CONFIG_ROUTER.HOME} element={<Dashboard/>}/>
                     <Route path={CONFIG_ROUTER.USER.INDEX} element={<ListUser/>}/>
                     <Route path={`${CONFIG_ROUTER.USER.INDEX}${CONFIG_ROUTER.USER.BAN}`} element={<BannedUser/>}/>
+                    <Route path={CONFIG_ROUTER.FRAME.INDEX} element={<ListFrame/>}/>
                 </Route>
                 <Route path={CONFIG_ROUTER.LOGIN} element={<Login/>}/>
                 <Route path='/403' element={<Forbidden/>}/>

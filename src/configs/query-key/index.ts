@@ -5,4 +5,8 @@ export const CONFIG_QUERY_KEY = {
         LIST_TRASH: 'list-trash-user',
         DETAIL_TRASH: 'list-trash-trash-user',
     },
+    FRAME: {
+        LIST: 'list-frame',
+        DETAIL: 'detail-frame',
+    }
 } as const

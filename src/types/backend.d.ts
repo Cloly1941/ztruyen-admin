@@ -4,11 +4,27 @@ type TRole = 'admin' | 'author' | 'user';
 
 export type TProvider = 'local' | 'google' | 'facebook';
 
+// Common
+export interface ICreated {
+    _id: string;
+    createdAt: string;
+}
+
+export interface IUpdated {
+    acknowledged: boolean;
+    modifiedCount: number;
+    upsertedId: string;
+    upsertedCount: number;
+    matchedCount: number;
+}
+
+//  Image
 interface IImage {
     _id: string;
     url: string;
 }
 
+// Auth & User
 export interface IUserLogin {
     _id: string;
     name: string;
@@ -49,4 +65,13 @@ export interface IUserUpdated {
     upsertedId: string;
     upsertedCount: number;
     matchedCount: number;
+}
+
+// Frame
+export interface IFrame {
+    _id: string;
+    name: string;
+    image: IImage;
+    createdAt: string;
+    updatedAt: string;
 }

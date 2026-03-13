@@ -1,6 +1,18 @@
 export const BASE_URL = import.meta.env.VITE_API_URL
 
 export const CONFIG_API = {
+    COMMON: {
+        DETAIL: 'detail',
+        DELETE: 'delete',
+        DELETE_MULTI: 'delete-multi',
+        UPDATE: 'update',
+        EXPORT: 'export',
+        EXPORT_TEMPLATE: 'template',
+        IMPORT: 'import',
+        TRASH: 'trash',
+        RESTORE: 'restore',
+        RESTORE_MULTI: 'restore-multi',
+    },
     AUTH: {
         INDEX: 'auth',
         LOGIN: 'login',
@@ -25,5 +37,8 @@ export const CONFIG_API = {
         RESTORE: 'restore',
         RESTORE_MULTI: 'restore-multi',
         CHANGE_PASSWORD: 'change-password',
+    },
+    FRAME: {
+        INDEX: 'frame',
     }
 } as const
