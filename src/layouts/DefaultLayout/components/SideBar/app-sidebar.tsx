@@ -38,7 +38,6 @@ const data = {
             title: "Người dùng",
             url: "#",
             icon: Users,
-            isActive: true,
             items: [
                 {
                     title: "Danh sách người dùng",
@@ -75,7 +74,7 @@ const data = {
                     url: "#",
                 },
             ],
-        },
+        }
     ],
     navAnalytics: [
         {
@@ -120,8 +119,8 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                 <TeamSwitcher teams={data.teams}/>
             </SidebarHeader>
             <SidebarContent>
-                <NavMain items={data.navManage} title='Quản lý'/>
                 <NavMain items={data.navAnalytics} title='Thống kê & theo dõi'/>
+                <NavMain items={data.navManage} title='Quản lý'/>
                 <NavMain items={data.navSystem} title='Hệ thống'/>
             </SidebarContent>
             <SidebarFooter>
