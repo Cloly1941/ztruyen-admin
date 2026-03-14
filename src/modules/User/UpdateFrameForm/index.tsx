@@ -153,23 +153,23 @@ const UpdateFrameForm = ({ id, avatarName, avatarUrl, frameId, onSuccess }: TUpd
                                 key={frame._id}
                                 onClick={() => setSelectedId(frame._id)}
                                 className={cn(
-                                    "flex flex-col items-center gap-1.5 p-2 rounded-lg cursor-pointer",
+                                    "flex flex-col items-center gap-1.5 py-4 rounded-lg cursor-pointer",
                                     "border-2 transition-all duration-150",
                                     isSelected
                                         ? "border-primary bg-primary/5"
                                         : "border-transparent hover:bg-muted/50"
                                 )}
                             >
-                                <div className="relative my-4">
+                                <div className="relative">
                                     <AvatarWithFrame
-                                        className="size-12"
+                                        className="size-20"
                                         avatarName={avatarName}
                                         avatarUrl={avatarUrl}
                                         frameUrl={frame.image.url}
                                         frameName={frame.name}
                                     />
                                     {isSelected && (
-                                        <span className="absolute -bottom-8 -right-8 flex items-center justify-center w-5 h-5 bg-primary rounded-full">
+                                        <span className="absolute -bottom-5 -right-5 flex items-center justify-center size-5 bg-primary rounded-full">
                                             <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                                                 <polyline
                                                     points="1.5,5 4,7.5 8.5,2.5"

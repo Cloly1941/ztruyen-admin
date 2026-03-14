@@ -21,6 +21,9 @@ import DropdownAction from "@/modules/User/DataTable/UserColumns/DropdownAction"
 import {DataTableColumnHeader} from "@/components/common/DataTableColumnHeader";
 import AvatarWithFrame from "@/components/common/AvatarWithFrame";
 
+// ** Lib
+import {cn} from "@/lib/utils.ts";
+
 export const UserColumns: ColumnDef<IUser>[] = [
     // Checkbox
     {
@@ -49,7 +52,7 @@ export const UserColumns: ColumnDef<IUser>[] = [
             const frame = data.avatar_frame
             const avatar = row.getValue<IImage | undefined>("avatar")
             return (
-                <div className='ml-2 my-3'>
+                <div className={cn(!frame && 'ml-1')}>
                     <AvatarWithFrame
                         avatarName={row.getValue<string>("name")}
                         avatarUrl={avatar?.url}

@@ -1,8 +1,8 @@
 // ** Component
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // ** Lib
-import {cn} from "@/lib/utils.ts";
+import { cn } from "@/lib/utils";
 
 type TAvatarWithFrameProps = {
     avatarUrl?: string;
@@ -13,49 +13,46 @@ type TAvatarWithFrameProps = {
     classAvatar?: string;
 };
 
-
-const AvatarWithFrame = ({avatarUrl, avatarName, frameName, frameUrl, className, classAvatar}: TAvatarWithFrameProps) => {
+const AvatarWithFrame = ({
+                             avatarUrl,
+                             avatarName,
+                             frameName,
+                             frameUrl,
+                             className,
+                             classAvatar,
+                         }: TAvatarWithFrameProps) => {
 
     if (!frameUrl) {
         return (
-           <div className='relative'>
-               <Avatar className={classAvatar}>
-                   <AvatarImage
-                       src={avatarUrl}
-                       alt={avatarName}
-                   />
-                   <AvatarFallback className='absolute'>
-                       {avatarName?.charAt(0).toUpperCase()}
-                   </AvatarFallback>
-               </Avatar>
-           </div>
+            <div className="relative">
+                <Avatar className={classAvatar}>
+                    <AvatarImage src={avatarUrl} alt={avatarName} />
+                    <AvatarFallback>
+                        {avatarName?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                </Avatar>
+            </div>
         )
     }
 
     return (
-        <div className={cn("relative size-8", className)}>
-            {/* Avatar */}
-            <Avatar className="absolute size-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <AvatarImage
-                    src={avatarUrl}
-                    alt={avatarName}
-                />
-                <AvatarFallback>
-                    {avatarName?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-            </Avatar>
-
-            {/* Frame */}
-            <div
-                className="absolute -top-[38.33%] -left-[38.33%] size-[176.48%] overflow-hidden pointer-events-none">
-                <img
-                    src={frameUrl}
-                    alt={frameName}
-                    className="min-w-full h-full"
-                />
+        <div className={cn("relative size-10", className)}>
+            <div className="absolute inset-0 flex items-center justify-center">
+                <Avatar className="w-[60%] h-[60%]">
+                    <AvatarImage src={avatarUrl} alt={avatarName} />
+                    <AvatarFallback className="text-xs">
+                        {avatarName?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                </Avatar>
             </div>
+
+            <img
+                src={frameUrl}
+                alt={frameName || ''}
+                className="relative z-10 w-full h-full object-contain pointer-events-none"
+            />
         </div>
-    );
+    )
 }
 
 export default AvatarWithFrame;
