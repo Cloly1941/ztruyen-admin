@@ -60,7 +60,7 @@ const FILTER_GROUPS: FilterGroup[] = [
         options: [
             {value: 'male', label: 'Nam'},
             {value: 'female', label: 'Nữ'},
-            {value: 'lgbt', label: 'LGBT'},
+            {value: 'other', label: 'Khác'},
         ],
     },
 ];

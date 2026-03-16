@@ -7,8 +7,9 @@ export const buildQueryString = (params: TQueryParams): string => {
     query.set("limit", String(params.limit))
 
     if (params.sort) query.set("sort", params.sort)
-    if (params.search && params.searchField) {
-        query.set(params.searchField, `/${params.search}/i`)
+
+    if (params.search && params.search.trim()) {
+        query.set("search", params.search.trim())
     }
 
     if (params.filters) {

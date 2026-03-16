@@ -49,7 +49,7 @@ const formSchema = z.object({
         .refine((val) => !!val, {
             message: 'Vui lòng chọn giới tính',
         })
-        .refine((val) => !val || ['male', 'female', 'lgbt'].includes(val), {
+        .refine((val) => !val || ['male', 'female', 'other'].includes(val), {
             message: 'Giới tính không hợp lệ',
         }),
     birthday: z
@@ -178,7 +178,7 @@ const UserUpdateForm = ({id, onSuccess}: TUserUpdateFormProps) => {
                             <SelectContent position="popper">
                                 <SelectItem value="male">Nam</SelectItem>
                                 <SelectItem value="female">Nữ</SelectItem>
-                                <SelectItem value="lgbt">LGBT</SelectItem>
+                                <SelectItem value="other">Khác</SelectItem>
                             </SelectContent>
                         </Select>
                         {fieldState.invalid && (

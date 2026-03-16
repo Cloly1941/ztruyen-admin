@@ -10,9 +10,7 @@ export const renderGenderBadge = (gender?: TGender) => {
             return <Badge variant="default">Nam</Badge>;
         case "female":
             return <Badge variant="secondary">Nữ</Badge>;
-        case "lgbt":
-            return <Badge variant="outline">LGBT</Badge>;
         default:
-            return <Badge variant="destructive">Không xác định</Badge>;
+            return <Badge variant="outline">Khác</Badge>;
     }
 };
