@@ -8,5 +8,8 @@ export const CONFIG_QUERY_KEY = {
     FRAME: {
         LIST: 'list-frame',
         DETAIL: 'detail-frame',
+    },
+    COMMENT: {
+        LIST: 'list-comment',
     }
 } as const

@@ -12,6 +12,7 @@ export const CONFIG_API = {
         TRASH: 'trash',
         RESTORE: 'restore',
         RESTORE_MULTI: 'restore-multi',
+        ADMIN: 'admin'
     },
     AUTH: {
         INDEX: 'auth',
@@ -41,5 +42,8 @@ export const CONFIG_API = {
     },
     FRAME: {
         INDEX: 'frame',
+    },
+    COMMENT: {
+        INDEX: 'comment',
     }
 } as const

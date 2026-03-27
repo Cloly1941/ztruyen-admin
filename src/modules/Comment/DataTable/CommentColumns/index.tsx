@@ -3,10 +3,9 @@ import type {ColumnDef} from "@tanstack/react-table"
 
 // ** Shadcn ui
 import {Checkbox} from "@/components/ui/checkbox"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 
 // ** Types
-import type {IImage, IFrame} from "@/types/backend";
+import type {IComment, IUserComment} from "@/types/backend";
 
 // ** Dayjs
 import dayjs from "dayjs";
@@ -15,9 +14,9 @@ import dayjs from "dayjs";
 import {DataTableColumnHeader} from "@/components/common/DataTableColumnHeader";
 
 // ** Module
-import ActionGroup from "@/modules/Frame/DataTable/ActionGroup";
+import ActionGroup from "@/modules/Comment/DataTable/ActionGroup";
 
-export const FrameColumns: ColumnDef<IFrame>[] = [
+export const CommentColumns: ColumnDef<IComment>[] = [
     // Checkbox
     {
         id: "select",
@@ -36,49 +35,35 @@ export const FrameColumns: ColumnDef<IFrame>[] = [
         enableSorting: false,
         enableHiding: false,
     },
-    // Avatar
+    // user name
     {
-        accessorKey: "image",
-        header: "Khung avatar",
+        accessorKey: "userId",
+        header: ({column}) => <DataTableColumnHeader column={column} title="Tên người dùng"/>,
         cell: ({row}) => {
-            const frame = row.getValue<IImage | undefined>("image")
+            const user = row.getValue<IUserComment | undefined>("userId")
             return (
-                <div className='ml-2'>
-                    <Avatar size='lg'>
-                        <AvatarImage src={frame?.url} alt={row.getValue("name")}/>
-                        <AvatarFallback>
-                            {row.getValue<string>("name")?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                    </Avatar>
-                </div>
+                <span className="font-medium">{user?.name}</span>
             )
-        }
+        },
     },
-    // Name
+    // content comment
     {
-        accessorKey: "name",
-        header: ({column}) => <DataTableColumnHeader column={column} title="Tên"/>,
-        cell: ({row}) => <span className="font-medium">{row.getValue("name")}</span>,
+        accessorKey: "content",
+        header: ({column}) => <DataTableColumnHeader column={column} title="Nội dung bình luận"/>,
+        cell: ({row}) => <span>{row.getValue("content")}</span>,
+    },
+    // Comic name
+    {
+        accessorKey: "comicName",
+        header: ({column}) => <DataTableColumnHeader column={column} title="Tên truyện"/>,
+        cell: ({row}) => <span className="font-medium">{row.getValue("comicName")}</span>,
     },
     // Created at
     {
         accessorKey: "createdAt",
-        header: ({column}) => <DataTableColumnHeader column={column} title="Ngày tạo"/>,
+        header: ({column}) => <DataTableColumnHeader column={column} title="Ngày bình luận"/>,
         cell: ({row}) => {
             const date = row.getValue<string>("createdAt")
-            return (
-                <span className="text-muted-foreground text-sm">
-                    {dayjs(date).format("HH:mm DD/MM/YYYY")}
-                </span>
-            )
-        }
-    },
-    // Updated at
-    {
-        accessorKey: "updatedAt",
-        header: ({column}) => <DataTableColumnHeader column={column} title="Ngày cập nhật"/>,
-        cell: ({row}) => {
-            const date = row.getValue<string>("updatedAt")
             return (
                 <span className="text-muted-foreground text-sm">
                     {dayjs(date).format("HH:mm DD/MM/YYYY")}

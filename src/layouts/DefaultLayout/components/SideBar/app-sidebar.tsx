@@ -67,10 +67,14 @@ const data = {
             items: [
                 {
                     title: "Danh sách bình luận",
+                    url: `${CONFIG_ROUTER.COMMENT.INDEX}`,
+                },
+                {
+                    title: "Bình luận bị báo cáo",
                     url: "#",
                 },
                 {
-                    title: "Bình luận bị ẩn",
+                    title: "Emoji",
                     url: "#",
                 },
             ],

@@ -14,6 +14,7 @@ type TUseDataTableOptions<T> = {
     queryKey: string
     queryFn: (params: TQueryParams) => Promise<IBackendRes<IModelPaginate<T>>>
     searchField: string,
+    defaultSort?: { id: string; desc: boolean }
 }
 
 export type TRangeFilter = {
@@ -32,10 +33,11 @@ export type TQueryParams = {
 }
 
 
-export const useDataTable = <T>({queryKey, queryFn, searchField = "name"}: TUseDataTableOptions<T>) => {
-    const [sorting, setSorting] = useState<SortingState>([
-        { id: "updatedAt", desc: true }
-    ])
+export const useDataTable = <T>({
+                                    queryKey, queryFn, searchField = "name",
+                                    defaultSort = { id: "updatedAt", desc: true }
+                                }: TUseDataTableOptions<T>) => {
+    const [sorting, setSorting] = useState<SortingState>([defaultSort])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = useState({})
     const [pagination, setPagination] = useState({pageIndex: 0, pageSize: 10})

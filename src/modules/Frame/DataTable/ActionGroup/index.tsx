@@ -18,11 +18,11 @@ import {FrameService} from "@/services/frame";
 // ** Module
 import FrameUpdateForm from "@/modules/Frame/FrameUpdateForm";
 
-type TDropdownAction = {
+type TActionGroup = {
     userId: string;
 }
 
-const DropdownAction = ({userId}: TDropdownAction) => {
+const ActionGroup = ({userId}: TActionGroup) => {
 
     const [activeDialog, setActiveDialog] = useState<string | null>(null);
 
@@ -69,4 +69,4 @@ const DropdownAction = ({userId}: TDropdownAction) => {
     );
 };
 
-export default DropdownAction
+export default ActionGroup

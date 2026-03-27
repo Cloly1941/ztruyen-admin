@@ -76,3 +76,34 @@ export interface IFrame {
     createdAt: string;
     updatedAt: string;
 }
+
+// Comment
+export interface IUserComment {
+    _id: string;
+    name: string;
+    avatar: IImage;
+    avatar_frame: IFrame;
+}
+
+export interface IReplyTo {
+    _id: string;
+    name: string
+}
+
+export interface IComment {
+    _id: string;
+    userId: IUserComment;
+    comicSlug: string;
+    comicName: string;
+    chapterId: string;
+    chapterName: string;
+    replyTo: IReplyTo;
+    page: number;
+    parent: string;
+    content: string;
+    likeCount: number;
+    replyCount: number;
+    createdAt: string;
+    updatedAt: string;
+    isLiked: boolean;
+}

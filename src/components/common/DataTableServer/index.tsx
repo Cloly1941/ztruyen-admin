@@ -30,6 +30,7 @@ type TDataTableServerProps<T> = {
     ) => ReactNode
     columnLabels?: Partial<Record<keyof T | "actions", string>>
     searchField: string;
+    defaultSort?: { id: string; desc: boolean }
     title?: string
     onExport?: (params: TQueryParams) => void
     contentAddBtn?: (close: () => void) => ReactNode
@@ -58,6 +59,7 @@ const DataTableServer = <T, >({
                                   toolbar,
                                   columnLabels = {},
                                   searchField,
+                                  defaultSort,
                                   title,
                                   onExport,
                                   contentAddBtn,
@@ -75,8 +77,8 @@ const DataTableServer = <T, >({
         rowSelection, setRowSelection,
         pagination, setPagination,
         filters, handleFilterChange,
-        rangeFilters, handleRangeFilterChange, params
-    } = useDataTable<T>({queryKey, queryFn, searchField})
+        rangeFilters, handleRangeFilterChange, params,
+    } = useDataTable<T>({queryKey, queryFn, searchField, defaultSort})
 
     const table = useReactTable({
         data,

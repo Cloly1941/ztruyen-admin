@@ -8,5 +8,8 @@ export const CONFIG_ROUTER = {
     },
     FRAME: {
         INDEX: '/frames',
+    },
+    COMMENT: {
+        INDEX: '/comments'
     }
 } as const
