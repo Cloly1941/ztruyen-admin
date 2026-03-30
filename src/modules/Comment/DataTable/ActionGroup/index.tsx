@@ -15,35 +15,35 @@ import {CommentService} from "@/services/comment";
 import {Trash} from "lucide-react";
 
 type TActionGroup = {
-    userId: string;
+    commentId: string;
 }
 
-const ActionGroup = ({userId}: TActionGroup) => {
+const ActionGroup = ({commentId}: TActionGroup) => {
 
     const [activeDialog, setActiveDialog] = useState<string | null>(null);
 
     return (
-       <>
-           {/* Delete */}
-           <Button
-               variant='ghost'
-               className='text-red-500 hover:text-red-500 ml-4'
-               onClick={() => setActiveDialog("delete")}
-           >
-               <Trash/>
-           </Button>
+        <>
+            {/* Delete */}
+            <Button
+                variant='ghost'
+                className='text-red-500 hover:text-red-500 ml-4'
+                onClick={() => setActiveDialog("delete")}
+            >
+                <Trash/>
+            </Button>
 
-           {/* Delete */}
-           <AlertDialogActionBtn
-               action='delete'
-               id={userId}
-               title='bình luận'
-               queryKey={CONFIG_QUERY_KEY.COMMENT.LIST}
-               api={CommentService.delete}
-               open={activeDialog === "delete"}
-               onOpenChange={(open) => !open && setActiveDialog(null)}
-           />
-       </>
+            {/* Delete */}
+            <AlertDialogActionBtn
+                action='delete'
+                id={commentId}
+                title='bình luận'
+                queryKey={CONFIG_QUERY_KEY.COMMENT.LIST}
+                api={CommentService.delete}
+                open={activeDialog === "delete"}
+                onOpenChange={(open) => !open && setActiveDialog(null)}
+            />
+        </>
     )
 }
 

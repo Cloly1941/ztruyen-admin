@@ -4,7 +4,7 @@ import * as React from "react"
 import {
     BarChart, Bell,
     Frame,
-    GalleryVerticalEnd, History, MessageSquare,
+    GalleryVerticalEnd, History, Laugh, MessageSquare,
     Users,
 } from "lucide-react"
 
@@ -72,10 +72,21 @@ const data = {
                 {
                     title: "Bình luận bị báo cáo",
                     url: "#",
+                }
+            ],
+        },
+        {
+            title: "Emoji",
+            url: "#",
+            icon: Laugh,
+            items: [
+                {
+                    title: "Danh mục Emoji",
+                    url: `${CONFIG_ROUTER.EMOJI.INDEX}${CONFIG_ROUTER.EMOJI.CATEGORY}`,
                 },
                 {
                     title: "Emoji",
-                    url: "#",
+                    url: `${CONFIG_ROUTER.EMOJI.INDEX}`,
                 },
             ],
         }

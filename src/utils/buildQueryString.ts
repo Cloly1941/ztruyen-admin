@@ -3,8 +3,8 @@ import type {TQueryParams} from "@/hooks/common/useDataTable.ts";
 export const buildQueryString = (params: TQueryParams): string => {
     const query = new URLSearchParams()
 
-    query.set("page", String(params.page))
-    query.set("limit", String(params.limit))
+    if (params.page !== undefined) query.set("page", String(params.page))
+    if (params.limit !== undefined) query.set("limit", String(params.limit))
 
     if (params.sort) query.set("sort", params.sort)
 

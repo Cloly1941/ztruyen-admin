@@ -12,7 +12,9 @@ export const CONFIG_API = {
         TRASH: 'trash',
         RESTORE: 'restore',
         RESTORE_MULTI: 'restore-multi',
-        ADMIN: 'admin'
+        ADMIN: 'admin',
+        TOGGLE: 'toggle',
+        REORDER: 'reorder',
     },
     AUTH: {
         INDEX: 'auth',
@@ -45,5 +47,11 @@ export const CONFIG_API = {
     },
     COMMENT: {
         INDEX: 'comment',
+    },
+    EMOJI: {
+        INDEX: 'emoji'
+    },
+    EMOJI_CATEGORY: {
+        INDEX: 'emoji-category'
     }
 } as const

@@ -10,6 +10,10 @@ export const CONFIG_ROUTER = {
         INDEX: '/frames',
     },
     COMMENT: {
-        INDEX: '/comments'
+        INDEX: '/comments',
+    },
+    EMOJI: {
+        INDEX: '/emojis',
+        CATEGORY: '/category',
     }
 } as const

@@ -28,7 +28,7 @@ type TDataTableServerProps<T> = {
         rangeFilters: Record<string, TRangeFilter>,
         onRangeFilterChange: (f: Record<string, TRangeFilter>) => void
     ) => ReactNode
-    columnLabels?: Partial<Record<keyof T | "actions", string>>
+    columnLabels?: Partial<Record<keyof T | "actions" | "content", string>>
     searchField: string;
     defaultSort?: { id: string; desc: boolean }
     title?: string
@@ -42,7 +42,7 @@ type TDataTableServerProps<T> = {
         onOpenChange: (open: boolean) => void,
     ) => ReactNode;
     deleteMultipleLabel?: string;
-    deleteMultipleSubLabel: string;
+    deleteMultipleSubLabel?: string;
     onRestoreMultiple?: (
         selectedIds: string[],
         onSuccess: () => void,

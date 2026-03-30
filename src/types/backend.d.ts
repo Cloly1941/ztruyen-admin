@@ -4,6 +4,8 @@ type TRole = 'admin' | 'author' | 'user';
 
 export type TProvider = 'local' | 'google' | 'facebook';
 
+export type TType = 'text' | 'image';
+
 // Common
 export interface ICreated {
     _id: string;
@@ -106,4 +108,28 @@ export interface IComment {
     createdAt: string;
     updatedAt: string;
     isLiked: boolean;
+}
+
+// emoji
+export interface ICategoryEmoji {
+    _id: string;
+    name: string;
+    name_unsigned: string;
+    image: IImage;
+    order: number;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IEmoji {
+    _id: string;
+    name: string;
+    type: TType;
+    text?: string
+    image?: string
+    category: ICategoryEmoji
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
 }

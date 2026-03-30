@@ -18,6 +18,8 @@ import ListUser from "@/pages/User";
 import BannedUser from "@/pages/User/Banned";
 import ListFrame from "@/pages/Frame";
 import ListComment from "@/pages/Comment";
+import ListEmoji from "@/pages/Emoji";
+import ListEmojiCategory from "@/pages/EmojiCategory";
 
 const AppRoutes = () => {
     return (
@@ -35,6 +37,8 @@ const AppRoutes = () => {
                     <Route path={`${CONFIG_ROUTER.USER.INDEX}${CONFIG_ROUTER.USER.BAN}`} element={<BannedUser/>}/>
                     <Route path={CONFIG_ROUTER.FRAME.INDEX} element={<ListFrame/>}/>
                     <Route path={CONFIG_ROUTER.COMMENT.INDEX} element={<ListComment/>}/>
+                    <Route path={CONFIG_ROUTER.EMOJI.INDEX} element={<ListEmoji/>}/>
+                    <Route path={`${CONFIG_ROUTER.EMOJI.INDEX}${CONFIG_ROUTER.EMOJI.CATEGORY}`} element={<ListEmojiCategory/>}/>
                 </Route>
                 <Route path={CONFIG_ROUTER.LOGIN} element={<Login/>}/>
                 <Route path='/403' element={<Forbidden/>}/>

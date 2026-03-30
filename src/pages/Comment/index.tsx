@@ -33,7 +33,7 @@ const ListComment = () => {
                 columns={CommentColumns}
                 searchPlaceholder='Tìm kiếm theo truyện ...'
                 columnLabels={{
-                    comicName: "Truyện",
+                    comicName: "Tên truyện",
                     content: 'Bình luận',
                     actions: "Hành động",
                     createdAt: "Ngày bình luận",

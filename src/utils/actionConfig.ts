@@ -5,6 +5,7 @@ export type TAction =
     | 'restore-multiple'
     | 'ban'
     | 'ban-multiple'
+    | 'status'
 
 export const actionConfig: Record<TAction, { label: string; title: string; desc: string }> = {
     delete: {
@@ -36,5 +37,10 @@ export const actionConfig: Record<TAction, { label: string; title: string; desc:
         label: "Cấm",
         title: "Xác nhận cấm",
         desc: "Người dùng sẽ bị cấm truy cập hệ thống."
+    },
+    status: {
+        label: "Thay đổi",
+        title: "Xác nhận thay đổi trạng thái",
+        desc: "Mục này sẽ thay đổi trạng thái"
     }
 }

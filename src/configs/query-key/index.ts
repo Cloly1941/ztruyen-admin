@@ -11,5 +11,12 @@ export const CONFIG_QUERY_KEY = {
     },
     COMMENT: {
         LIST: 'list-comment',
+    },
+    EMOJI: {
+        LIST: 'list-emoji',
+    },
+    EMOJI_CATEGORY: {
+        LIST: 'list-emoji-category',
+        DETAIL: 'detail-emoji-category',
     }
 } as const

@@ -77,8 +77,8 @@ export const CommentColumns: ColumnDef<IComment>[] = [
         header: "Hành động",
         cell: ({row}) => {
             const data = row.original
-            const userId = data._id
-            return <ActionGroup userId={userId}/>
+            const commentId = data._id
+            return <ActionGroup commentId={commentId}/>
         },
     },
 ]

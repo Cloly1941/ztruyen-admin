@@ -23,8 +23,8 @@ export type TRangeFilter = {
 }
 
 export type TQueryParams = {
-    page: number
-    limit: number
+    page?: number
+    limit?: number
     search?: string
     searchField?: string
     sort?: string
