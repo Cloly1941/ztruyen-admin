@@ -1,5 +1,5 @@
 // ** React
-import {useState, useRef, type ChangeEvent} from "react";
+import {useState, useRef, type ChangeEvent, useEffect} from "react";
 
 // ** React query
 import {useQuery, useQueryClient} from "@tanstack/react-query";
@@ -41,8 +41,9 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Type
-import type { TType} from "@/types/backend";
+import type {IDetailEmoji, TType} from "@/types/backend";
 import {EmojiCategoryService} from "@/services/emoji-category";
+import useGetMethod from "@/hooks/common/useGetMethod.ts";
 
 
 export const formSchema = z.object({
@@ -62,7 +63,7 @@ export const formSchema = z.object({
 
 export type TEmojiForm = z.infer<typeof formSchema>;
 
-export type TEmojiCreateFormPayload = {
+export type TEmojiUpdateFormPayload = {
     name: string;
     image?: string;
     type: TType;
@@ -70,17 +71,35 @@ export type TEmojiCreateFormPayload = {
     category: string;
 };
 
-type TEmojiCreateForm = {
+type TEmojiUpdateForm = {
+    id: string
     onSuccess?: () => void;
 }
 
-const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
+const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
     const [preview, setPreview] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(false);
     const [tab, setTab] = useState<TType>("image");
     const [selectOpen, setSelectOpen] = useState(false)
+
+    const {data: emojiData, isLoading, error} = useGetMethod<IDetailEmoji>({
+        api: () => EmojiService.detail(id),
+        key: [CONFIG_QUERY_KEY.EMOJI.DETAIL, id],
+        enabled: !!id && !!open
+    })
+
+    // fetch detail emoji category fail
+    useEffect(() => {
+        if (error) {
+            toast.error(
+                'Không thể tải thông tin danh mục emoji. Vui lòng thử lại sau.'
+            )
+        }
+    }, [error])
+
+    const emoji = emojiData?.data
 
     const queryClient = useQueryClient();
 
@@ -93,8 +112,21 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
 
     const form = useForm<TEmojiForm>({
         resolver: zodResolver(formSchema),
-        defaultValues: {type: "image", name: ""},
     });
+
+    // default frame name
+    useEffect(() => {
+        if (emoji) {
+            form.reset({
+                name: emoji.name,
+                category: emoji.category,
+                text: emoji.text,
+                type: emoji.type
+            })
+
+            setTab(emoji.type);
+        }
+    }, [emoji, form])
 
     const handleTabChange = (value: string) => {
         const type = value as TType;
@@ -126,32 +158,34 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
         if (inputRef.current) inputRef.current.value = "";
     };
 
+    if (!emoji) return 'Không tìm thấy thông tin emoji.'
 
     const onSubmit = async (values: TEmojiForm) => {
         try {
             setLoading(true);
 
+            let imageId = emoji?.image?._id;
+
             if (values.type === "image") {
-                if (!file) {
-                    toast.error("Vui lòng chọn ảnh emoji.");
-                    return;
+                if (file) {
+                    const image = await UploadService.single(file, `${values.name} ${Date.now()}`);
+
+                    if (!image.data) {
+                        toast.error("Tải ảnh lên thất bại.");
+                        return;
+                    }
+
+                    imageId = image.data._id;
                 }
 
-                const image = await UploadService.single(file, `${values.name} ${Date.now()}`);
-
-                if (!image.data) {
-                    toast.error("Tải ảnh lên thất bại.");
-                    return;
-                }
-
-                await EmojiService.add({
+                await EmojiService.update(id, {
                     name: values.name,
                     type: "image",
                     category: values.category,
-                    image: image.data._id,
+                    image: imageId,
                 });
             } else {
-                await EmojiService.add({
+                await EmojiService.update(id, {
                     name: values.name,
                     type: "text",
                     category: values.category,
@@ -163,7 +197,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                 queryKey: [CONFIG_QUERY_KEY.EMOJI.LIST],
             });
 
-            toast.success("Tạo emoji thành công!");
+            toast.success("Cập nhật emoji thành công!");
             if (tab === "image") {
                 form.reset({type: "image", name: ""});
             } else {
@@ -179,9 +213,11 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
         }
     }
 
+    if (isLoading) return 'Đang tải chi tiết emoji...'
+
     return (
-        <form id="form-create-emoji" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <Tabs defaultValue="image" onValueChange={handleTabChange}>
+        <form id="form-update-emoji" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <Tabs value={tab} onValueChange={handleTabChange}>
                 <TabsList variant="line">
                     <TabsTrigger value="image">Emoji hình ảnh</TabsTrigger>
                     <TabsTrigger value="text">Emoji văn bản</TabsTrigger>
@@ -194,7 +230,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
 
                             <Avatar
                                 className="size-20 ring-2 ring-border rounded-none">
-                                <AvatarImage src={preview ?? ""}/>
+                                <AvatarImage src={preview ?? emoji?.image?.url}/>
                                 <AvatarFallback className="text-2xl font-semibold rounded-none">
                                     {form.watch("name")?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
@@ -261,6 +297,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                     <Field data-invalid={fieldState.invalid}>
                         <FieldLabel>Chọn danh mục</FieldLabel>
                         <Select
+                            key={field.value}
                             open={selectOpen}
                             onOpenChange={setSelectOpen}
                             value={field.value}
@@ -296,10 +333,10 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                 control={form.control}
                 render={({field, fieldState}) => (
                     <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor="form-create-emoji-name">Tên emoji</FieldLabel>
+                        <FieldLabel htmlFor="form-update-emoji-name">Tên emoji</FieldLabel>
                         <Input
                             {...field}
-                            id="form-create-emoji-name"
+                            id="form-update-emoji-name"
                             placeholder="Nhập tên emoji"
                             aria-invalid={fieldState.invalid}
                         />
@@ -316,14 +353,14 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
 
                 <Button
                     type="submit"
-                    form="form-create-emoji"
+                    form="form-update-emoji"
                     isLoading={loading}
                 >
-                    Lưu
+                    Lưu thay đổi
                 </Button>
             </DialogFooter>
         </form>
     )
 }
 
-export default EmojiCreateForm
+export default EmojiUpdateForm

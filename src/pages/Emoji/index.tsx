@@ -16,6 +16,7 @@ import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
 // ** Module
 import EmojiCreateForm from "@/modules/Emoji/EmojiCreateForm";
+import EmojiFilterGroup from "@/modules/Emoji/DataTable/EmojiFilterGroup";
 
 
 const ListEmoji = () => {
@@ -42,10 +43,17 @@ const ListEmoji = () => {
                     isActive: 'Trạng thái',
                     type: 'Loại',
                     content: 'Emoji',
+                    category: 'Danh mục',
                     actions: "Hành động",
                     createdAt: "Ngày tạo",
                     updatedAt: 'Ngày cập nhật'
                 }}
+                toolbar={(filters, onFilterChange) => (
+                    <EmojiFilterGroup
+                        filters={filters}
+                        onFilterChange={onFilterChange}
+                    />
+                )}
                 deleteMultipleLabel='Xoá'
                 deleteMultipleSubLabel='emoji'
                 onDeleteMultiple={(selectedIds, onSuccess, open, onOpenChange) => (

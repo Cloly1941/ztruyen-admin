@@ -127,8 +127,20 @@ export interface IEmoji {
     name: string;
     type: TType;
     text?: string
-    image?: string
+    image?: IImage
     category: ICategoryEmoji
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IDetailEmoji {
+    _id: string;
+    name: string;
+    type: TType;
+    text?: string
+    image?: IImage
+    category: string;
     isActive: boolean;
     createdAt: string;
     updatedAt: string;

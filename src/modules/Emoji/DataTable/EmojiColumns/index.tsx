@@ -5,7 +5,7 @@ import type {ColumnDef} from "@tanstack/react-table"
 import {Checkbox} from "@/components/ui/checkbox"
 
 // ** Types
-import type {IEmoji, TType} from "@/types/backend";
+import type {ICategoryEmoji, IEmoji, IImage, TType} from "@/types/backend";
 
 // ** Dayjs
 import dayjs from "dayjs";
@@ -16,6 +16,7 @@ import {DataTableColumnHeader} from "@/components/common/DataTableColumnHeader";
 // ** Utils
 import {renderTypeBadge} from "@/utils/renderTypeBadge.tsx";
 import {renderActiveBadge} from "@/utils/renderActiveBadge.tsx";
+import DropdownAction from "@/modules/Emoji/DataTable/EmojiColumns/DropdownAction";
 
 // ** Module
 
@@ -58,12 +59,12 @@ export const EmojiColumns: ColumnDef<IEmoji>[] = [
         cell: ({row}) => {
             const type = row.getValue<TType>("type")
             const text = row.original.text
-            const image = row.original.image
+            const image = row.original.image as IImage | undefined;
 
             if (type === "image" && image) {
                 return (
                     <img
-                        src={image}
+                        src={image?.url}
                         alt={row.getValue("name")}
                         className="w-8 h-8 object-contain"
                     />
@@ -78,6 +79,16 @@ export const EmojiColumns: ColumnDef<IEmoji>[] = [
         accessorKey: "isActive",
         header: ({column}) => <DataTableColumnHeader column={column} title="Trạng thái"/>,
         cell: ({row}) => renderActiveBadge(row.getValue<boolean>("isActive")),
+    },
+    // Category
+    {
+        accessorKey: "category",
+        header: "Danh mục",
+        cell: ({row}) => {
+            const category = row.getValue<ICategoryEmoji>('category')
+            const categoryName = category.name
+            return <span className="font-medium">{categoryName}</span>
+        }
     },
     // Created at
     {
@@ -111,8 +122,10 @@ export const EmojiColumns: ColumnDef<IEmoji>[] = [
         header: "Hành động",
         cell: ({row}) => {
             const data = row.original
+            const emojiId = data._id
+            const isActive = data.isActive
 
-            // return <ActionGroup userId={userId}/>
+            return <DropdownAction emojiId={emojiId} isActive={isActive}/>
         },
     },
 ]

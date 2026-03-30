@@ -14,6 +14,7 @@ export const CONFIG_QUERY_KEY = {
     },
     EMOJI: {
         LIST: 'list-emoji',
+        DETAIL: 'detail-emoji'
     },
     EMOJI_CATEGORY: {
         LIST: 'list-emoji-category',
