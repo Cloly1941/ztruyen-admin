@@ -130,6 +130,7 @@ export interface IEmoji {
     image?: IImage
     category: ICategoryEmoji
     isActive: boolean;
+    isGif: boolean;
     createdAt: string;
     updatedAt: string;
 }
@@ -142,6 +143,7 @@ export interface IDetailEmoji {
     image?: IImage
     category: string;
     isActive: boolean;
+    isGif: boolean;
     createdAt: string;
     updatedAt: string;
 }

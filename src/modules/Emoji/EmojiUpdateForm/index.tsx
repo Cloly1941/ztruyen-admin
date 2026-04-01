@@ -19,6 +19,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Field, FieldError, FieldLabel} from "@/components/ui/field";
+import {Switch} from "@/components/ui/switch.tsx";
 
 // ** Zod
 import {z} from "zod";
@@ -42,15 +43,19 @@ import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Type
 import type {IDetailEmoji, TType} from "@/types/backend";
-import {EmojiCategoryService} from "@/services/emoji-category";
-import useGetMethod from "@/hooks/common/useGetMethod.ts";
 
+// ** Service
+import {EmojiCategoryService} from "@/services/emoji-category";
+
+// ** Hook
+import useGetMethod from "@/hooks/common/useGetMethod.ts";
 
 export const formSchema = z.object({
     type: z.enum(["image", "text"]),
     name: z.string().min(1, "Tên emoji không được để trống"),
     text: z.string().optional(),
     category: z.string().min(1, "Vui lòng chọn danh mục"),
+    isGif: z.boolean(),
 }).superRefine((data, ctx) => {
     if (data.type === "text" && !data.text) {
         ctx.addIssue({
@@ -69,6 +74,7 @@ export type TEmojiUpdateFormPayload = {
     type: TType;
     text?: string;
     category: string;
+    isGif?: boolean;
 };
 
 type TEmojiUpdateForm = {
@@ -121,7 +127,8 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                 name: emoji.name,
                 category: emoji.category,
                 text: emoji.text,
-                type: emoji.type
+                type: emoji.type,
+                isGif: emoji.isGif ?? false,
             })
 
             setTab(emoji.type);
@@ -167,8 +174,12 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
             let imageId = emoji?.image?._id;
 
             if (values.type === "image") {
+
+                const isGif = values.isGif
+
+
                 if (file) {
-                    const image = await UploadService.single(file, `${values.name} ${Date.now()}`);
+                    const image = await UploadService.single(file, `emoji-${isGif ? 'gif-' : ''}${values.name} ${Date.now()}`);
 
                     if (!image.data) {
                         toast.error("Tải ảnh lên thất bại.");
@@ -183,6 +194,7 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                     type: "image",
                     category: values.category,
                     image: imageId,
+                    isGif: values.isGif,
                 });
             } else {
                 await EmojiService.update(id, {
@@ -253,7 +265,7 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                     {/* Upload */}
                     <div
                         onClick={() => inputRef.current?.click()}
-                        className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors"
+                        className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors mt-4"
                     >
                         <Upload className="size-8 text-muted-foreground"/>
                         <p className="text-sm font-medium">Nhấn để chọn ảnh</p>
@@ -269,6 +281,25 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                             onChange={handleFileChange}
                         />
                     </div>
+
+                    <Controller
+                        name="isGif"
+                        control={form.control}
+                        render={({ field }) => (
+                            <Field>
+                                <div className="flex items-center gap-2 mt-4">
+                                    <Switch
+                                        id="form-update-emoji-isGif"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                    <FieldLabel htmlFor="form-update-emoji-isGif" className="mb-0 cursor-pointer">
+                                        Là emoji GIF
+                                    </FieldLabel>
+                                </div>
+                            </Field>
+                        )}
+                    />
                 </TabsContent>
 
                 <TabsContent value="text" className='mt-2'>

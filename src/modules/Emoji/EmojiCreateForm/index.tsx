@@ -19,6 +19,7 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import {Field, FieldError, FieldLabel} from "@/components/ui/field";
+import {Switch} from "@/components/ui/switch";
 
 // ** Zod
 import {z} from "zod";
@@ -32,6 +33,7 @@ import Button from "@/components/common/Button";
 // ** Services
 import {EmojiService} from "@/services/emoji";
 import {UploadService} from "@/services/upload";
+import {EmojiCategoryService} from "@/services/emoji-category";
 
 // ** Config
 import {CONFIG_QUERY_KEY} from "@/configs/query-key";
@@ -42,14 +44,13 @@ import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Type
 import type { TType} from "@/types/backend";
-import {EmojiCategoryService} from "@/services/emoji-category";
-
 
 export const formSchema = z.object({
     type: z.enum(["image", "text"]),
     name: z.string().min(1, "Tên emoji không được để trống"),
     text: z.string().optional(),
     category: z.string().min(1, "Vui lòng chọn danh mục"),
+    isGif: z.boolean(),
 }).superRefine((data, ctx) => {
     if (data.type === "text" && !data.text) {
         ctx.addIssue({
@@ -68,6 +69,7 @@ export type TEmojiCreateFormPayload = {
     type: TType;
     text?: string;
     category: string;
+    isGif?: boolean;
 };
 
 type TEmojiCreateForm = {
@@ -93,7 +95,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
 
     const form = useForm<TEmojiForm>({
         resolver: zodResolver(formSchema),
-        defaultValues: {type: "image", name: ""},
+        defaultValues: {type: "image", name: "", isGif: false},
     });
 
     const handleTabChange = (value: string) => {
@@ -132,12 +134,15 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
             setLoading(true);
 
             if (values.type === "image") {
+
+                const isGif = values.isGif
+
                 if (!file) {
                     toast.error("Vui lòng chọn ảnh emoji.");
                     return;
                 }
 
-                const image = await UploadService.single(file, `${values.name} ${Date.now()}`);
+                const image = await UploadService.single(file, `emoji-${isGif ? 'gif-' : ''}${values.name} ${Date.now()}`);
 
                 if (!image.data) {
                     toast.error("Tải ảnh lên thất bại.");
@@ -149,6 +154,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                     type: "image",
                     category: values.category,
                     image: image.data._id,
+                    isGif: values.isGif,
                 });
             } else {
                 await EmojiService.add({
@@ -217,7 +223,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                     {/* Upload */}
                     <div
                         onClick={() => inputRef.current?.click()}
-                        className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors"
+                        className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors mt-4"
                     >
                         <Upload className="size-8 text-muted-foreground"/>
                         <p className="text-sm font-medium">Nhấn để chọn ảnh</p>
@@ -233,6 +239,25 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                             onChange={handleFileChange}
                         />
                     </div>
+
+                    <Controller
+                        name="isGif"
+                        control={form.control}
+                        render={({ field }) => (
+                            <Field>
+                                <div className="flex items-center gap-2 mt-4">
+                                    <Switch
+                                        id="form-create-emoji-isGif"
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                    <FieldLabel htmlFor="form-create-emoji-isGif" className="mb-0 cursor-pointer">
+                                        Là emoji GIF
+                                    </FieldLabel>
+                                </div>
+                            </Field>
+                        )}
+                    />
                 </TabsContent>
 
                 <TabsContent value="text" className='mt-2'>
