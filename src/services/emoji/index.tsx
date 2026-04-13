@@ -15,8 +15,6 @@ import type {TEmojiUpdateFormPayload} from "@/modules/Emoji/EmojiUpdateForm";
 // ** Utils
 import {buildQueryString} from "@/utils/buildQueryString.ts";
 
-
-
 export const EmojiService = {
     list: async (params: TQueryParams) => {
         const query = buildQueryString(params)

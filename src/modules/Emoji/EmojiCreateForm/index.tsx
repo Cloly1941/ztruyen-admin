@@ -2,19 +2,14 @@
 import {useState, useRef, type ChangeEvent} from "react";
 
 // ** React query
-import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 
 // ** React hot toast
 import toast from "react-hot-toast";
 
 // ** Shadcn ui
 import {DialogClose, DialogFooter} from "@/components/ui/dialog";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
@@ -43,7 +38,10 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Type
-import type { TType} from "@/types/backend";
+import type {ICreated, TType} from "@/types/backend";
+
+// ** Hooks
+import usePostMethod from "@/hooks/common/usePostMethod.ts";
 
 export const formSchema = z.object({
     type: z.enum(["image", "text"]),
@@ -80,18 +78,19 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
     const [preview, setPreview] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const [loading, setLoading] = useState(false);
-    const [tab, setTab] = useState<TType>("image");
-    const [selectOpen, setSelectOpen] = useState(false)
-
-    const queryClient = useQueryClient();
+    const [selectOpen, setSelectOpen] = useState(false);
 
     const {data, isLoading: isLoadingEmoji} = useQuery({
         queryKey: [CONFIG_QUERY_KEY.EMOJI_CATEGORY.LIST],
         queryFn: () => EmojiCategoryService.list(),
         select: (res) => res.data ?? [],
         enabled: selectOpen
-    })
+    });
+
+    const {mutate, isPending} = usePostMethod<TEmojiCreateFormPayload, ICreated>({
+        api: EmojiService.add,
+        key: [CONFIG_QUERY_KEY.EMOJI.LIST],
+    });
 
     const form = useForm<TEmojiForm>({
         resolver: zodResolver(formSchema),
@@ -99,9 +98,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
     });
 
     const handleTabChange = (value: string) => {
-        const type = value as TType;
-        setTab(type);
-        form.setValue("type", type);
+        form.setValue("type", value as TType);
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -128,62 +125,49 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
         if (inputRef.current) inputRef.current.value = "";
     };
 
-
     const onSubmit = async (values: TEmojiForm) => {
-        try {
-            setLoading(true);
+        if (values.type === "image") {
+            const cleanName = values.name.replace(/\s*gif\s*/gi, '').trim();
+            const name = values.isGif ? `${cleanName} gif` : cleanName;
 
-            if (values.type === "image") {
-
-                const isGif = values.isGif
-
-                if (!file) {
-                    toast.error("Vui lòng chọn ảnh emoji.");
-                    return;
-                }
-
-                const image = await UploadService.single(file, `emoji-${isGif ? 'gif-' : ''}${values.name} ${Date.now()}`);
-
-                if (!image.data) {
-                    toast.error("Tải ảnh lên thất bại.");
-                    return;
-                }
-
-                await EmojiService.add({
-                    name: values.name,
-                    type: "image",
-                    category: values.category,
-                    image: image.data._id,
-                    isGif: values.isGif,
-                });
-            } else {
-                await EmojiService.add({
-                    name: values.name,
-                    type: "text",
-                    category: values.category,
-                    text: values.text,
-                });
+            if (!file) {
+                toast.error("Vui lòng chọn ảnh emoji.");
+                return;
             }
 
-            await queryClient.invalidateQueries({
-                queryKey: [CONFIG_QUERY_KEY.EMOJI.LIST],
+            const image = await UploadService.single(file, `emoji ${name} ${Date.now()}`);
+            if (!image.data) {
+                toast.error("Tải ảnh lên thất bại.");
+                return;
+            }
+
+            mutate({
+                name,
+                type: "image",
+                category: values.category,
+                image: image.data._id,
+                isGif: values.isGif,
+            }, {
+                onSuccess: () => {
+                    form.reset({type: "image", name: "", isGif: false});
+                    handleRemove();
+                    onSuccess?.();
+                }
             });
-
-            toast.success("Tạo emoji thành công!");
-            if (tab === "image") {
-                form.reset({type: "image", name: ""});
-            } else {
-                form.reset({type: "text", name: "", text: ""});
-            }
-            handleRemove();
-            onSuccess?.();
-        } catch (err) {
-            toast.error("Có lỗi xảy ra.");
-            console.error(err);
-        } finally {
-            setLoading(false);
+        } else {
+            mutate({
+                name: values.name,
+                type: "text",
+                category: values.category,
+                text: values.text,
+            }, {
+                onSuccess: () => {
+                    form.reset({type: "text", name: "", text: ""});
+                    onSuccess?.();
+                }
+            });
         }
-    }
+    };
 
     return (
         <form id="form-create-emoji" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -194,12 +178,9 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                 </TabsList>
 
                 <TabsContent value="image" className='mt-4'>
-                    {/* Preview */}
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
-
-                            <Avatar
-                                className="size-20 ring-2 ring-border rounded-none">
+                            <Avatar className="size-20 ring-2 ring-border rounded-none">
                                 <AvatarImage src={preview ?? ""}/>
                                 <AvatarFallback className="text-2xl font-semibold rounded-none">
                                     {form.watch("name")?.charAt(0).toUpperCase()}
@@ -216,21 +197,16 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                                 </button>
                             )}
                         </div>
-
                         <p className="text-sm text-muted-foreground">{preview && file?.name}</p>
                     </div>
 
-                    {/* Upload */}
                     <div
                         onClick={() => inputRef.current?.click()}
                         className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors mt-4"
                     >
                         <Upload className="size-8 text-muted-foreground"/>
                         <p className="text-sm font-medium">Nhấn để chọn ảnh</p>
-                        <p className="text-xs text-muted-foreground">
-                            PNG, JPG, WEBP — tối đa 5MB
-                        </p>
-
+                        <p className="text-xs text-muted-foreground">PNG, JPG, WEBP — tối đa 5MB</p>
                         <input
                             ref={inputRef}
                             type="file"
@@ -243,7 +219,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                     <Controller
                         name="isGif"
                         control={form.control}
-                        render={({ field }) => (
+                        render={({field}) => (
                             <Field>
                                 <div className="flex items-center gap-2 mt-4">
                                     <Switch
@@ -278,7 +254,6 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                 </TabsContent>
             </Tabs>
 
-            {/* Category Select */}
             <Controller
                 name="category"
                 control={form.control}
@@ -296,9 +271,7 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                             </SelectTrigger>
                             <SelectContent position="popper">
                                 {isLoadingEmoji ? (
-                                    <SelectItem value="loading" disabled>
-                                        Đang tải...
-                                    </SelectItem>
+                                    <SelectItem value="loading" disabled>Đang tải...</SelectItem>
                                 ) : (
                                     data?.map((emoji) => (
                                         <SelectItem key={emoji._id} value={emoji._id}>
@@ -315,7 +288,6 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                 )}
             />
 
-            {/* Name */}
             <Controller
                 name="name"
                 control={form.control}
@@ -333,22 +305,16 @@ const EmojiCreateForm = ({onSuccess}: TEmojiCreateForm) => {
                 )}
             />
 
-            {/* Actions */}
             <DialogFooter>
                 <DialogClose asChild>
                     <Button variant="outline">Huỷ</Button>
                 </DialogClose>
-
-                <Button
-                    type="submit"
-                    form="form-create-emoji"
-                    isLoading={loading}
-                >
+                <Button type="submit" form="form-create-emoji" isLoading={isPending}>
                     Lưu
                 </Button>
             </DialogFooter>
         </form>
-    )
-}
+    );
+};
 
-export default EmojiCreateForm
+export default EmojiCreateForm;

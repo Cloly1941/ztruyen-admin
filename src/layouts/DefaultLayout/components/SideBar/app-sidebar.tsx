@@ -4,7 +4,7 @@ import * as React from "react"
 import {
     BarChart, Bell,
     Frame,
-    GalleryVerticalEnd, History, Laugh, MessageSquare,
+    GalleryVerticalEnd, Laugh, MessageSquare,
     Users,
 } from "lucide-react"
 
@@ -93,23 +93,14 @@ const data = {
     ],
     navAnalytics: [
         {
-            title: "Thống kê truyện",
+            title: "Thống kê",
             url: "#",
             icon: BarChart,
             items: [
                 {title: "Tổng quan", url: "#"},
-                {title: "Lượt yêu thích", url: "#"},
-                {title: "Lượt bình luận", url: "#"},
+                {title: "Bảng xếp hạng yêu thích", url: "#"},
             ],
-        },
-        {
-            title: "Lịch sử đọc",
-            url: "#",
-            icon: History,
-            items: [
-                {title: "Danh sách lịch sử", url: "#"},
-            ],
-        },
+        }
     ],
     navSystem: [
         {
@@ -117,8 +108,10 @@ const data = {
             url: "#",
             icon: Bell,
             items: [
-                {title: "Danh sách thông báo", url: "#"},
-                {title: "Gửi thông báo", url: "#"},
+                {
+                    title: "Danh sách thông báo",
+                    url: `${CONFIG_ROUTER.ANNOUNCEMENT.INDEX}`
+                },
             ],
         },
     ],

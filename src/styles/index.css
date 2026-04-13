@@ -53,6 +53,13 @@
 }
 
 @layer utilities {
+    *:focus,
+    *:focus-visible {
+        outline: none !important;
+        box-shadow: none !important;
+        ring: 0 !important;
+    }
+
     [data-slot='field-error'] {
         @apply text-red-400;
     }

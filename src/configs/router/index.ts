@@ -15,5 +15,8 @@ export const CONFIG_ROUTER = {
     EMOJI: {
         INDEX: '/emojis',
         CATEGORY: '/category',
+    },
+    ANNOUNCEMENT: {
+        INDEX: '/announcements',
     }
 } as const

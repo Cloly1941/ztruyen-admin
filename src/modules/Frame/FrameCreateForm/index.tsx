@@ -1,39 +1,40 @@
 // ** React
-import { useState, useRef, type ChangeEvent } from "react";
-
-// ** React query
-import { useQueryClient } from "@tanstack/react-query";
+import {useState, useRef, type ChangeEvent} from "react";
 
 // ** React hot toast
 import toast from "react-hot-toast";
 
 // ** Shadcn ui
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {DialogClose, DialogFooter} from "@/components/ui/dialog";
 
 // ** Zod
-import { z } from "zod";
+import {z} from "zod";
 
 // ** Icon
-import { Upload, X } from "lucide-react";
+import {Upload, X} from "lucide-react";
 
 // ** Component
 import Button from "@/components/common/Button";
 
 // ** Services
-import { FrameService } from "@/services/frame";
-import { UploadService } from "@/services/upload";
+import {FrameService} from "@/services/frame";
+import {UploadService} from "@/services/upload";
 
 // ** Config
-import { CONFIG_QUERY_KEY } from "@/configs/query-key";
+import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
 // ** React hook form
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** UI
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import {Field, FieldError, FieldLabel} from "@/components/ui/field";
+import {Input} from "@/components/ui/input";
+
+// ** Hook
+import usePostMethod from "@/hooks/common/usePostMethod.ts";
+import type {ICreated} from "@/types/backend";
 
 export const formSchema = z.object({
     name: z.string().min(1, "Tên khung avatar không được để trống"),
@@ -48,15 +49,18 @@ export type TFrameCreateFormPayload = {
 
 type TFrameCreateForm = {
     onSuccess?: () => void;
+
 };
 
-const FrameCreateForm = ({ onSuccess }: TFrameCreateForm) => {
+const FrameCreateForm = ({onSuccess}: TFrameCreateForm) => {
     const [preview, setPreview] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const [loading, setLoading] = useState(false);
 
-    const queryClient = useQueryClient();
+    const {mutate, isPending} = usePostMethod<TFrameCreateFormPayload, ICreated>({
+        api: FrameService.add,
+        key: [CONFIG_QUERY_KEY.FRAME.LIST],
+    });
 
     const form = useForm<TFrameForm>({
         resolver: zodResolver(formSchema),
@@ -87,45 +91,27 @@ const FrameCreateForm = ({ onSuccess }: TFrameCreateForm) => {
     };
 
     const onSubmit = async (values: TFrameForm) => {
-        try {
-            if (!file) {
-                toast.error("Vui lòng chọn ảnh khung avatar.");
-                return;
-            }
-
-            setLoading(true);
-
-            const image = await UploadService.single(
-                file,
-                `${values.name} ${Date.now()}`
-            );
-
-            if (!image.data) {
-                toast.error("Tải ảnh lên thất bại.");
-                return;
-            }
-
-            await FrameService.add({
-                name: values.name,
-                image: image.data._id,
-            });
-
-            await queryClient.invalidateQueries({
-                queryKey: [CONFIG_QUERY_KEY.FRAME.LIST],
-            });
-
-            toast.success("Tạo khung avatar thành công!");
-
-            form.reset();
-            handleRemove();
-
-            onSuccess?.();
-        } catch (err) {
-            toast.error("Có lỗi xảy ra.");
-            console.error(err);
-        } finally {
-            setLoading(false);
+        if (!file) {
+            toast.error("Vui lòng chọn ảnh khung avatar.");
+            return;
         }
+
+        const image = await UploadService.single(file, `${values.name} ${Date.now()}`);
+        if (!image.data) {
+            toast.error("Tải ảnh lên thất bại.");
+            return;
+        }
+
+        mutate({
+            name: values.name,
+            image: image.data._id,
+        }, {
+            onSuccess: () => {
+                form.reset();
+                handleRemove();
+                onSuccess?.();
+            }
+        });
     };
 
     return (
@@ -134,11 +120,10 @@ const FrameCreateForm = ({ onSuccess }: TFrameCreateForm) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
         >
-            {/* Preview */}
             <div className="flex flex-col items-center gap-3">
                 <div className="relative">
                     <Avatar className="size-20 ring-2 ring-border">
-                        <AvatarImage src={preview ?? ""} />
+                        <AvatarImage src={preview ?? ""}/>
                         <AvatarFallback className="text-2xl font-semibold">
                             {form.watch("name")?.charAt(0).toUpperCase()}
                         </AvatarFallback>
@@ -150,25 +135,20 @@ const FrameCreateForm = ({ onSuccess }: TFrameCreateForm) => {
                             onClick={handleRemove}
                             className="absolute -top-1 -right-6 size-5 rounded-full bg-destructive text-white flex items-center justify-center hover:bg-destructive/80 transition-colors"
                         >
-                            <X className="size-3" />
+                            <X className="size-3"/>
                         </button>
                     )}
                 </div>
-
                 <p className="text-sm text-muted-foreground">{preview && file?.name}</p>
             </div>
 
-            {/* Upload */}
             <div
                 onClick={() => inputRef.current?.click()}
                 className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors"
             >
-                <Upload className="size-8 text-muted-foreground" />
+                <Upload className="size-8 text-muted-foreground"/>
                 <p className="text-sm font-medium">Nhấn để chọn ảnh</p>
-                <p className="text-xs text-muted-foreground">
-                    PNG, JPG, WEBP — tối đa 5MB
-                </p>
-
+                <p className="text-xs text-muted-foreground">PNG, JPG, WEBP — tối đa 5MB</p>
                 <input
                     ref={inputRef}
                     type="file"
@@ -178,16 +158,14 @@ const FrameCreateForm = ({ onSuccess }: TFrameCreateForm) => {
                 />
             </div>
 
-            {/* Name */}
             <Controller
                 name="name"
                 control={form.control}
-                render={({ field, fieldState }) => (
+                render={({field, fieldState}) => (
                     <Field data-invalid={fieldState.invalid}>
                         <FieldLabel htmlFor="form-create-frame-name">
                             Tên khung avatar
                         </FieldLabel>
-
                         <Input
                             {...field}
                             id="form-create-frame-name"
@@ -195,25 +173,16 @@ const FrameCreateForm = ({ onSuccess }: TFrameCreateForm) => {
                             autoComplete="name"
                             aria-invalid={fieldState.invalid}
                         />
-
-                        {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]}/>}
                     </Field>
                 )}
             />
 
-            {/* Actions */}
             <DialogFooter>
                 <DialogClose asChild>
                     <Button variant="outline">Huỷ</Button>
                 </DialogClose>
-
-                <Button
-                    type="submit"
-                    form="form-create-frame"
-                    isLoading={loading}
-                >
+                <Button type="submit" form="form-create-frame" isLoading={isPending}>
                     Tạo khung
                 </Button>
             </DialogFooter>

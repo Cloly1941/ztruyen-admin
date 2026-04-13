@@ -1,9 +1,6 @@
 // ** React
 import {useState, useRef, type ChangeEvent} from "react";
 
-// ** React query
-import {useQueryClient} from "@tanstack/react-query";
-
 // ** React hot toast
 import toast from "react-hot-toast";
 
@@ -23,7 +20,6 @@ import Button from "@/components/common/Button";
 
 // ** Services
 import {EmojiCategoryService} from "@/services/emoji-category";
-import {UploadService} from "@/services/upload";
 
 // ** Config
 import {CONFIG_QUERY_KEY} from "@/configs/query-key";
@@ -35,6 +31,11 @@ import {zodResolver} from "@hookform/resolvers/zod";
 // ** UI
 import {Field, FieldError, FieldLabel} from "@/components/ui/field";
 
+// ** Hook
+import usePostWithImage from "@/hooks/common/usePostWithImage.ts";
+
+// ** Type
+import type {ICreated} from "@/types/backend";
 
 export const formSchema = z.object({
     name: z.string().min(1, "Tên khung avatar không được để trống"),
@@ -55,9 +56,13 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
     const [preview, setPreview] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const [loading, setLoading] = useState(false);
 
-    const queryClient = useQueryClient();
+    const {mutate, isPending} = usePostWithImage<TEmojiCategoryCreateFormPayload, ICreated>({
+        api: EmojiCategoryService.add,
+        key: [CONFIG_QUERY_KEY.EMOJI_CATEGORY.LIST],
+        fileKey: 'image',
+        fileCaption: (payload) => `${payload.name} ${Date.now()}`,
+    });
 
     const form = useForm<TEmojiCategoryForm>({
         resolver: zodResolver(formSchema),
@@ -88,45 +93,16 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
     };
 
     const onSubmit = async (values: TEmojiCategoryForm) => {
-        try {
-            if (!file) {
-                toast.error("Vui lòng chọn ảnh danh mục emoji.");
-                return;
+        await mutate({
+            name: values.name,
+            file,
+        }, {
+            onSuccess: () => {
+                form.reset();
+                handleRemove();
+                onSuccess?.();
             }
-
-            setLoading(true);
-
-            const image = await UploadService.single(
-                file,
-                `${values.name} ${Date.now()}`
-            );
-
-            if (!image.data) {
-                toast.error("Tải ảnh lên thất bại.");
-                return;
-            }
-
-            await EmojiCategoryService.add({
-                name: values.name,
-                image: image.data._id,
-            });
-
-            await queryClient.invalidateQueries({
-                queryKey: [CONFIG_QUERY_KEY.EMOJI_CATEGORY.LIST],
-            });
-
-            toast.success("Tạo danh mục emoji thành công!");
-
-            form.reset();
-            handleRemove();
-
-            onSuccess?.();
-        } catch (err) {
-            toast.error("Có lỗi xảy ra.");
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
+        });
     };
 
     return (
@@ -135,7 +111,6 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
         >
-            {/* Preview */}
             <div className="flex flex-col items-center gap-3">
                 <div className="relative">
                     <Avatar className="size-10 ring-2 ring-border rounded-none">
@@ -155,21 +130,16 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
                         </button>
                     )}
                 </div>
-
                 <p className="text-sm text-muted-foreground">{preview && file?.name}</p>
             </div>
 
-            {/* Upload */}
             <div
                 onClick={() => inputRef.current?.click()}
                 className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors"
             >
                 <Upload className="size-8 text-muted-foreground"/>
                 <p className="text-sm font-medium">Nhấn để chọn ảnh</p>
-                <p className="text-xs text-muted-foreground">
-                    PNG, JPG, WEBP — tối đa 5MB
-                </p>
-
+                <p className="text-xs text-muted-foreground">PNG, JPG, WEBP — tối đa 5MB</p>
                 <input
                     ref={inputRef}
                     type="file"
@@ -179,7 +149,6 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
                 />
             </div>
 
-            {/* Name */}
             <Controller
                 name="name"
                 control={form.control}
@@ -188,7 +157,6 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
                         <FieldLabel htmlFor="form-create-emoji-category-name">
                             Tên danh mục emoji
                         </FieldLabel>
-
                         <Input
                             {...field}
                             id="form-create-emoji-category-name"
@@ -196,30 +164,21 @@ const EmojiCategoryCreateForm = ({onSuccess}: TEmojiCategoryCreateForm) => {
                             autoComplete="name"
                             aria-invalid={fieldState.invalid}
                         />
-
-                        {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]}/>
-                        )}
+                        {fieldState.invalid && <FieldError errors={[fieldState.error]}/>}
                     </Field>
                 )}
             />
 
-            {/* Actions */}
             <DialogFooter>
                 <DialogClose asChild>
                     <Button variant="outline">Huỷ</Button>
                 </DialogClose>
-
-                <Button
-                    type="submit"
-                    form="form-create-emoji-category"
-                    isLoading={loading}
-                >
+                <Button type="submit" form="form-create-emoji-category" isLoading={isPending}>
                     Lưu
                 </Button>
             </DialogFooter>
         </form>
-    )
-}
+    );
+};
 
-export default EmojiCategoryCreateForm
+export default EmojiCategoryCreateForm;

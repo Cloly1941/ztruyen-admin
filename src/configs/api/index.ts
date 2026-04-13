@@ -53,5 +53,8 @@ export const CONFIG_API = {
     },
     EMOJI_CATEGORY: {
         INDEX: 'emoji-category'
+    },
+    ANNOUNCEMENT: {
+        INDEX: 'announcement',
     }
 } as const

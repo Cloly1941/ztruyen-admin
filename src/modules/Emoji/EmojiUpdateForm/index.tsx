@@ -2,19 +2,14 @@
 import {useState, useRef, type ChangeEvent, useEffect} from "react";
 
 // ** React query
-import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {useQuery} from "@tanstack/react-query";
 
 // ** React hot toast
 import toast from "react-hot-toast";
 
 // ** Shadcn ui
 import {DialogClose, DialogFooter} from "@/components/ui/dialog";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Input} from "@/components/ui/input";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
@@ -33,6 +28,7 @@ import Button from "@/components/common/Button";
 // ** Services
 import {EmojiService} from "@/services/emoji";
 import {UploadService} from "@/services/upload";
+import {EmojiCategoryService} from "@/services/emoji-category";
 
 // ** Config
 import {CONFIG_QUERY_KEY} from "@/configs/query-key";
@@ -42,13 +38,11 @@ import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Type
-import type {IDetailEmoji, TType} from "@/types/backend";
-
-// ** Service
-import {EmojiCategoryService} from "@/services/emoji-category";
+import type {IDetailEmoji, IUpdated, TType} from "@/types/backend";
 
 // ** Hook
 import useGetMethod from "@/hooks/common/useGetMethod.ts";
+import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
 
 export const formSchema = z.object({
     type: z.enum(["image", "text"]),
@@ -78,7 +72,7 @@ export type TEmojiUpdateFormPayload = {
 };
 
 type TEmojiUpdateForm = {
-    id: string
+    id: string;
     onSuccess?: () => void;
 }
 
@@ -86,59 +80,52 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
     const [preview, setPreview] = useState<string | null>(null);
     const [file, setFile] = useState<File | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    const [loading, setLoading] = useState(false);
-    const [tab, setTab] = useState<TType>("image");
-    const [selectOpen, setSelectOpen] = useState(false)
+    const [selectOpen, setSelectOpen] = useState(false);
 
     const {data: emojiData, isLoading, error} = useGetMethod<IDetailEmoji>({
         api: () => EmojiService.detail(id),
         key: [CONFIG_QUERY_KEY.EMOJI.DETAIL, id],
         enabled: !!id && !!open
-    })
+    });
 
-    // fetch detail emoji category fail
     useEffect(() => {
         if (error) {
-            toast.error(
-                'Không thể tải thông tin danh mục emoji. Vui lòng thử lại sau.'
-            )
+            toast.error('Không thể tải thông tin danh mục emoji. Vui lòng thử lại sau.');
         }
-    }, [error])
+    }, [error]);
 
-    const emoji = emojiData?.data
-
-    const queryClient = useQueryClient();
+    const emoji = emojiData?.data;
 
     const {data, isLoading: isLoadingEmoji} = useQuery({
         queryKey: [CONFIG_QUERY_KEY.EMOJI_CATEGORY.LIST],
         queryFn: () => EmojiCategoryService.list(),
         select: (res) => res.data ?? [],
         enabled: selectOpen
-    })
+    });
+
+    const {mutate, isPending} = usePatchMethod<TEmojiUpdateFormPayload, IUpdated>({
+        api: (payload) => EmojiService.update(id, payload),
+        keys: [[CONFIG_QUERY_KEY.EMOJI.LIST], [CONFIG_QUERY_KEY.EMOJI.DETAIL, id]],
+    });
 
     const form = useForm<TEmojiForm>({
         resolver: zodResolver(formSchema),
     });
 
-    // default frame name
     useEffect(() => {
         if (emoji) {
             form.reset({
-                name: emoji.name,
+                name: emoji.name.replace(/\s*gif\s*/gi, '').trim(),
                 category: emoji.category,
                 text: emoji.text,
                 type: emoji.type,
                 isGif: emoji.isGif ?? false,
-            })
-
-            setTab(emoji.type);
+            });
         }
-    }, [emoji, form])
+    }, [emoji, form]);
 
     const handleTabChange = (value: string) => {
-        const type = value as TType;
-        setTab(type);
-        form.setValue("type", type);
+        form.setValue("type", value as TType);
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -165,84 +152,64 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
         if (inputRef.current) inputRef.current.value = "";
     };
 
-    if (!emoji) return 'Không tìm thấy thông tin emoji.'
+    if (isLoading) return 'Đang tải chi tiết emoji...';
+    if (!emoji) return 'Không tìm thấy thông tin emoji.';
 
     const onSubmit = async (values: TEmojiForm) => {
-        try {
-            setLoading(true);
+        if (values.type === "image") {
+            const cleanName = values.name.replace(/\s*gif\s*/gi, '').trim();
+            const name = values.isGif ? `${cleanName} gif` : cleanName;
 
-            let imageId = emoji?.image?._id;
+            let imageId = emoji.image?._id;
 
-            if (values.type === "image") {
-
-                const isGif = values.isGif
-
-
-                if (file) {
-                    const image = await UploadService.single(file, `emoji-${isGif ? 'gif-' : ''}${values.name} ${Date.now()}`);
-
-                    if (!image.data) {
-                        toast.error("Tải ảnh lên thất bại.");
-                        return;
-                    }
-
-                    imageId = image.data._id;
+            if (file) {
+                const image = await UploadService.single(file, `emoji ${name} ${Date.now()}`);
+                if (!image.data) {
+                    toast.error("Tải ảnh lên thất bại.");
+                    return;
                 }
-
-                await EmojiService.update(id, {
-                    name: values.name,
-                    type: "image",
-                    category: values.category,
-                    image: imageId,
-                    isGif: values.isGif,
-                });
-            } else {
-                await EmojiService.update(id, {
-                    name: values.name,
-                    type: "text",
-                    category: values.category,
-                    text: values.text,
-                });
+                imageId = image.data._id;
             }
 
-            await queryClient.invalidateQueries({
-                queryKey: [CONFIG_QUERY_KEY.EMOJI.LIST],
+            mutate({
+                name,
+                type: "image",
+                category: values.category,
+                image: imageId,
+                isGif: values.isGif,
+            }, {
+                onSuccess: () => {
+                    handleRemove();
+                    onSuccess?.();
+                }
             });
-
-            toast.success("Cập nhật emoji thành công!");
-            if (tab === "image") {
-                form.reset({type: "image", name: ""});
-            } else {
-                form.reset({type: "text", name: "", text: ""});
-            }
-            handleRemove();
-            onSuccess?.();
-        } catch (err) {
-            toast.error("Có lỗi xảy ra.");
-            console.error(err);
-        } finally {
-            setLoading(false);
+        } else {
+            mutate({
+                name: values.name,
+                type: "text",
+                category: values.category,
+                text: values.text,
+            }, {
+                onSuccess: () => {
+                    onSuccess?.();
+                }
+            });
         }
-    }
-
-    if (isLoading) return 'Đang tải chi tiết emoji...'
+    };
 
     return (
         <form id="form-update-emoji" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <Tabs value={tab} onValueChange={handleTabChange}>
+            <Tabs value={form.watch("type")} onValueChange={handleTabChange}>
                 <TabsList variant="line">
                     <TabsTrigger value="image">Emoji hình ảnh</TabsTrigger>
                     <TabsTrigger value="text">Emoji văn bản</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="image" className='mt-4'>
-                    {/* Preview */}
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
-
-                            <Avatar
-                                className="size-20 ring-2 ring-border rounded-none">
-                                <AvatarImage src={preview ?? emoji?.image?.url}/>
+                            <Avatar className="size-20 ring-2 ring-border rounded-none">
+                                <AvatarImage src={preview ?? emoji.image?.url}/>
                                 <AvatarFallback className="text-2xl font-semibold rounded-none">
                                     {form.watch("name")?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
@@ -258,21 +225,16 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                                 </button>
                             )}
                         </div>
-
                         <p className="text-sm text-muted-foreground">{preview && file?.name}</p>
                     </div>
 
-                    {/* Upload */}
                     <div
                         onClick={() => inputRef.current?.click()}
                         className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer hover:border-primary hover:bg-accent/50 transition-colors mt-4"
                     >
                         <Upload className="size-8 text-muted-foreground"/>
                         <p className="text-sm font-medium">Nhấn để chọn ảnh</p>
-                        <p className="text-xs text-muted-foreground">
-                            PNG, JPG, WEBP — tối đa 5MB
-                        </p>
-
+                        <p className="text-xs text-muted-foreground">PNG, JPG, WEBP — tối đa 5MB</p>
                         <input
                             ref={inputRef}
                             type="file"
@@ -285,7 +247,7 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                     <Controller
                         name="isGif"
                         control={form.control}
-                        render={({ field }) => (
+                        render={({field}) => (
                             <Field>
                                 <div className="flex items-center gap-2 mt-4">
                                     <Switch
@@ -320,7 +282,6 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                 </TabsContent>
             </Tabs>
 
-            {/* Category Select */}
             <Controller
                 name="category"
                 control={form.control}
@@ -339,14 +300,12 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                             </SelectTrigger>
                             <SelectContent position="popper">
                                 {isLoadingEmoji ? (
-                                    <SelectItem value="loading" disabled>
-                                        Đang tải...
-                                    </SelectItem>
+                                    <SelectItem value="loading" disabled>Đang tải...</SelectItem>
                                 ) : (
-                                    data?.map((emoji) => (
-                                        <SelectItem key={emoji._id} value={emoji._id}>
+                                    data?.map((cat) => (
+                                        <SelectItem key={cat._id} value={cat._id}>
                                             <div className="flex items-center gap-2">
-                                                <span>{emoji.name}</span>
+                                                <span>{cat.name}</span>
                                             </div>
                                         </SelectItem>
                                     ))
@@ -358,7 +317,6 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                 )}
             />
 
-            {/* Name */}
             <Controller
                 name="name"
                 control={form.control}
@@ -376,22 +334,16 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
                 )}
             />
 
-            {/* Actions */}
             <DialogFooter>
                 <DialogClose asChild>
                     <Button variant="outline">Huỷ</Button>
                 </DialogClose>
-
-                <Button
-                    type="submit"
-                    form="form-update-emoji"
-                    isLoading={loading}
-                >
+                <Button type="submit" form="form-update-emoji" isLoading={isPending}>
                     Lưu thay đổi
                 </Button>
             </DialogFooter>
         </form>
-    )
-}
+    );
+};
 
-export default EmojiUpdateForm
+export default EmojiUpdateForm;

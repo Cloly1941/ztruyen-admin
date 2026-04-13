@@ -6,6 +6,8 @@ export type TProvider = 'local' | 'google' | 'facebook';
 
 export type TType = 'text' | 'image';
 
+export type TTypeAnnouncement = 'info' | 'warning' | 'maintenance' | 'event'
+
 // Common
 export interface ICreated {
     _id: string;
@@ -144,6 +146,17 @@ export interface IDetailEmoji {
     category: string;
     isActive: boolean;
     isGif: boolean;
+    createdAt: string;
+    updatedAt: string;
+}
+
+// Announcement
+export interface IAnnouncement {
+    _id: string;
+    title: string;
+    content: string;
+    type: TTypeAnnouncement;
+    isActive: boolean;
     createdAt: string;
     updatedAt: string;
 }
