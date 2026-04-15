@@ -22,5 +22,16 @@ declare global {
         statusCode: number;
         message: string;
     }
+
+
+    // Otruyen api
+
+    interface IApiOtruyenRes<T> {
+        status: number | string;
+        message: string;
+        data?: {
+            items: T;
+        };
+    }
 }
 

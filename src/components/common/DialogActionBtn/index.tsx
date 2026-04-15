@@ -18,7 +18,7 @@ type TDialogActionBtn = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     render: (close: () => void) => ReactNode;
-    action?: "add" | "edit" | "detail" | "changePassword" | "import";
+    action?: "add" | "edit" | "detail" | "changePassword" | "import" | "importJSON";
 };
 
 const DialogActionBtn = ({
@@ -33,6 +33,7 @@ const DialogActionBtn = ({
             case "edit": return <span className="dialog-trigger">Cập nhật {title}</span>;
             case "detail": return <span className="dialog-trigger">Xem thông tin {title}</span>;
             case "changePassword": return <span className="dialog-trigger">Đổi mật khẩu</span>;
+            case "importJSON": return <span className="dialog-trigger">Nhập {title}</span>;
             default: return <Button variant='outline'><Upload/>Nhập</Button>;
         }
     };
@@ -43,6 +44,7 @@ const DialogActionBtn = ({
             case "edit": return { titleText: `Cập nhật ${title}`, descriptionText: `Chỉnh sửa ${title} tại đây. Nhấn lưu khi hoàn tất.` };
             case "detail": return { titleText: `Chi tiết thông tin ${title}` };
             case "changePassword": return { titleText: `Đổi mật khẩu ${title}`, descriptionText: `Đổi mật khẩu ${title} tại đây. Nhấn lưu khi hoàn tất.` };
+            case "importJSON": return { titleText: `Dán JSON ${title} vào đây` };
             default: return { titleText: `Nhập ${title}`, descriptionText: `Tải file ${title} tại đây. Nhấn lưu khi hoàn tất.` };
         }
     };
@@ -60,7 +62,7 @@ const DialogActionBtn = ({
             )}
 
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent>
+                <DialogContent className='overflow-x-hidden'>
                     <DialogHeader>
                         <DialogTitle>{titleText}</DialogTitle>
                         {descriptionText && <DialogDescription>{descriptionText}</DialogDescription>}

@@ -20,8 +20,15 @@ export const CONFIG_QUERY_KEY = {
         LIST: 'list-emoji-category',
         DETAIL: 'detail-emoji-category',
     },
+    COMIC: {
+        RANKING_LIST: 'comic-ranking-list',
+        RANKING_DETAIL: 'comic-ranking-detail',
+    },
     ANNOUNCEMENT: {
         LIST: 'list-announcement',
         DETAIL: 'detail-announcement',
     },
+    OTRUYEN: {
+        CATEGORY: 'list-category',
+    }
 } as const

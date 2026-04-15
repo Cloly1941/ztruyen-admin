@@ -32,7 +32,6 @@ const ListUser = () => {
                 <meta name="robots" content="noindex, nofollow"/>
             </Helmet>
 
-
             <DataTableServer
                 onImport={(close) => (
                     <ImportDialog<IUserImportColumn>

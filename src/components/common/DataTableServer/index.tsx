@@ -49,6 +49,7 @@ type TDataTableServerProps<T> = {
         open: boolean,
         onOpenChange: (open: boolean) => void,
     ) => ReactNode;
+    extraButtons?: ReactNode
 }
 
 const DataTableServer = <T, >({
@@ -67,7 +68,8 @@ const DataTableServer = <T, >({
                                   onDeleteMultiple,
                                   deleteMultipleLabel = "Xoá",
                                   deleteMultipleSubLabel,
-                                  onRestoreMultiple
+                                  onRestoreMultiple,
+                                  extraButtons
                               }: TDataTableServerProps<T>) => {
     const {
         data, pageCount, total, isLoading,
@@ -141,6 +143,7 @@ const DataTableServer = <T, >({
                             {onDeleteMultiple?.(selectedIds, clearSelection, deleteMultiOpen, setDeleteMultiOpen)}
                         </>
                     )}
+                    {extraButtons}
                     {onImport && (
                         <DialogActionBtn
                             title={title}

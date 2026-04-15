@@ -88,7 +88,7 @@ const AnnouncementUpdate = ({id, onSuccess}: TAnnouncementUpdate) => {
         resolver: zodResolver(formSchema)
     });
 
-    // default data user
+    // default data announcement
     useEffect(() => {
         if (announcement) {
             form.reset({
@@ -100,11 +100,8 @@ const AnnouncementUpdate = ({id, onSuccess}: TAnnouncementUpdate) => {
     }, [announcement, form])
 
     const onSubmit = (values: TAnnouncementUpdateForm) => {
-        mutate(values, {
-            onSuccess: () => {
-                onSuccess?.();
-            }
-        });
+        mutate(values);
+        onSuccess?.();
     };
 
     if (isLoading) return 'Đang tải thông báo...';

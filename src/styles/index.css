@@ -105,6 +105,11 @@
     [data-slot="avatar-image"] {
         @apply object-cover;
     }
+
+    /*  Textarea  */
+    [data-slot="textarea"] {
+        @apply break-all
+    }
 }
 
 @layer components {

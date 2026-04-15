@@ -56,5 +56,11 @@ export const CONFIG_API = {
     },
     ANNOUNCEMENT: {
         INDEX: 'announcement',
+    },
+    COMIC: {
+        INDEX: 'comic',
+    },
+    OTRUYEN: {
+        CATEGORY: '/the-loai'
     }
 } as const

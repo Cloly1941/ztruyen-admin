@@ -160,3 +160,30 @@ export interface IAnnouncement {
     createdAt: string;
     updatedAt: string;
 }
+
+// Comic
+export interface ICategory {
+    _id: string;
+    name: string;
+}
+
+export interface IComic {
+    _id: string;
+    name: string;
+    slug: string;
+    thumb_url: string;
+    authors: string[];
+    status: string;
+    genres: string[];
+    latest_chapter: string;
+    chapter_api_data: string;
+    country: string;
+    rank: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface IImportComic {
+    inserted: number;
+    skipped: number;
+}
