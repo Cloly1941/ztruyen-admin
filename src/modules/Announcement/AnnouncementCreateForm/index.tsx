@@ -1,6 +1,3 @@
-// ** React hot toast
-import toast from "react-hot-toast";
-
 // ** Shadcn ui
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 
