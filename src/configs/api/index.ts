@@ -60,6 +60,9 @@ export const CONFIG_API = {
     COMIC: {
         INDEX: 'comic',
     },
+    GUIDE: {
+        INDEX: 'guide',
+    },
     OTRUYEN: {
         CATEGORY: '/the-loai'
     }

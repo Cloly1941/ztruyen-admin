@@ -8,6 +8,8 @@ export type TType = 'text' | 'image';
 
 export type TTypeAnnouncement = 'info' | 'warning' | 'maintenance' | 'event'
 
+export type TPlatform = 'Android' | 'IOS' | 'PC' | 'None'
+
 // Common
 export interface ICreated {
     _id: string;
@@ -186,4 +188,17 @@ export interface IComic {
 export interface IImportComic {
     inserted: number;
     skipped: number;
+}
+
+// Guide
+export interface IGuide {
+    _id: string;
+    title: string;
+    slug: string;
+    description: string;
+    platform: TPlatform;
+    content: string;
+    isActive: boolean;
+    createdAt: string;
+    updatedAt: string;
 }

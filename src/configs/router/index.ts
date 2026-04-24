@@ -21,5 +21,8 @@ export const CONFIG_ROUTER = {
     },
     ANNOUNCEMENT: {
         INDEX: '/announcements',
+    },
+    GUIDE: {
+        INDEX: '/guides',
     }
 } as const

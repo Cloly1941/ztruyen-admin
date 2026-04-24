@@ -28,6 +28,10 @@ export const CONFIG_QUERY_KEY = {
         LIST: 'list-announcement',
         DETAIL: 'detail-announcement',
     },
+    GUIDE: {
+        LIST: 'list-guide',
+        DETAIL: 'detail-guide',
+    },
     OTRUYEN: {
         CATEGORY: 'list-category',
     }

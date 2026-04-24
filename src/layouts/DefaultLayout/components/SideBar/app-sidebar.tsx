@@ -4,7 +4,7 @@ import * as React from "react"
 import {
     BarChart, Bell,
     Frame,
-    GalleryVerticalEnd, Laugh, MessageSquare,
+    GalleryVerticalEnd, Laugh, MessageSquare, Signpost,
     Users,
 } from "lucide-react"
 
@@ -111,6 +111,17 @@ const data = {
                 {
                     title: "Danh sách thông báo",
                     url: `${CONFIG_ROUTER.ANNOUNCEMENT.INDEX}`
+                },
+            ],
+        },
+        {
+            title: "Hướng dẫn",
+            url: "#",
+            icon: Signpost,
+            items: [
+                {
+                    title: "Danh sách hướng dẫn",
+                    url: `${CONFIG_ROUTER.GUIDE.INDEX}`
                 },
             ],
         },
