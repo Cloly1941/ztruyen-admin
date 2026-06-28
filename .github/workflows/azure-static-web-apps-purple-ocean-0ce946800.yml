@@ -22,6 +22,13 @@ jobs:
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+          VITE_TURNSTILE_SITE_KEY: ${{ secrets.VITE_TURNSTILE_SITE_KEY }}
+
+          VITE_OTRUYEN_IMG: ${{ secrets.VITE_OTRUYEN_IMG }}
+          VITE_OTRUYEN_API: ${{ secrets.VITE_OTRUYEN_API }}
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_OCEAN_0CE946800 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
