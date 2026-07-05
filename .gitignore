@@ -24,3 +24,11 @@ dist-ssr
 *.sw?
 
 .env
+
+# BMAD generated/tool files
+_bmad/
+_bmad-output/
+
+# IDE-specific AI agent configs
+.agent/
+.claude/
