@@ -20,7 +20,7 @@ description: Creates a new git branch following the project's naming convention 
 - Show the proposed branch name to the user and wait for confirmation before creating it.
 
 ### 3. Determine base branch
-- Default base branch: `develop`
+- Default base branch: `dev`
 - If the type is `fix` and the user indicates it's a hotfix, use `main` instead.
 - Ask if ambiguous.
 

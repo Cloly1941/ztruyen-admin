@@ -32,7 +32,7 @@ description: Stages changes and creates a git commit following Conventional Comm
 ### 5. Confirm before committing
 - Show the exact commit message to the user.
 - Wait for explicit confirmation before running `git commit`.
-- Never commit directly to `main` or `develop` — verify current branch first; if on a shared branch, warn the user and stop.
+- Never commit directly to `main` or `dev` — verify current branch first; if on a shared branch, warn the user and stop.
 
 ### 6. After commit
 - Report the commit hash and message.
