@@ -20,7 +20,7 @@ import {
 import Button from "@/components/common/Button";
 
 // ** Icons
-import {BarChart, Bell, Frame, History, MessageSquare, SearchIcon, Users} from "lucide-react";
+import {BarChart, Bell, Frame, Laugh, MessageSquare, SearchIcon, Signpost, TrendingUp, Users} from "lucide-react";
 
 // ** Config
 import {CONFIG_ROUTER} from "@/configs/router";
@@ -30,21 +30,23 @@ const commandGroups = [
         heading: "Các trang tổng quan",
         items: [
             {label: "Người dùng", icon: <Users/>, href: CONFIG_ROUTER.USER.INDEX},
-            {label: "Khung avatar", icon: <Frame/>, href: CONFIG_ROUTER.USER.INDEX},
-            {label: "Bình luận", icon: <MessageSquare/>, href: CONFIG_ROUTER.USER.INDEX},
+            {label: "Khung avatar", icon: <Frame/>, href: CONFIG_ROUTER.FRAME.INDEX},
+            {label: "Bình luận", icon: <MessageSquare/>, href: CONFIG_ROUTER.COMMENT.INDEX},
+            {label: "Emoji", icon: <Laugh/>, href: CONFIG_ROUTER.EMOJI.INDEX},
         ]
     },
     {
         heading: "Thống kê & theo dõi",
         items: [
-            {label: "Thống kê truyện", icon: <BarChart/>, href: CONFIG_ROUTER.USER.INDEX},
-            {label: "Lịch sử đọc", icon: <History/>, href: CONFIG_ROUTER.USER.INDEX},
+            {label: "Tổng quan", icon: <BarChart/>, href: CONFIG_ROUTER.HOME},
+            {label: "Bảng xếp hạng tuần", icon: <TrendingUp/>, href: CONFIG_ROUTER.COMIC.RANKING},
         ]
     },
     {
         heading: "Hệ thống",
         items: [
-            {label: "Thông báo", icon: <Bell/>, href: CONFIG_ROUTER.USER.INDEX},
+            {label: "Thông báo", icon: <Bell/>, href: CONFIG_ROUTER.ANNOUNCEMENT.INDEX},
+            {label: "Hướng dẫn", icon: <Signpost/>, href: CONFIG_ROUTER.GUIDE.INDEX},
         ]
     }
 ]
@@ -56,7 +58,9 @@ const Search = () => {
 
     const handleSelect = (href: string) => {
         setOpen(false)
-        navigate(href)
+        if (href && href !== "#") {
+            navigate(href)
+        }
     }
 
     useEffect(() => {
