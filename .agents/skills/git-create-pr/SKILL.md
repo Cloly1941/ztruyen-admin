@@ -34,8 +34,8 @@ Jira: <link hoặc ID>
 ## How to test
 <các bước test thủ công>
 
-## Screenshots
-<Nếu là thay đổi UI thì yêu cầu người dùng đính kèm ảnh hoặc ghi "N/A">
+## Evidence
+- Ảnh chụp màn hình hoặc video chứng minh sự thay đổi
 
 ### 5. Confirm before opening
 - Show the proposed PR title, description, and target branch (default: `dev`, unless hotfix → `main`) to the user.
