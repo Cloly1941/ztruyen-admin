@@ -23,6 +23,7 @@ import ListEmojiCategory from "@/pages/EmojiCategory";
 import ListAnnouncement from "@/pages/Announcement";
 import ListRanking from "@/pages/Ranking";
 import ListGuide from "@/pages/Guide";
+import Profile from "@/pages/Profile";
 
 const AppRoutes = () => {
     return (
@@ -45,6 +46,7 @@ const AppRoutes = () => {
                     <Route path={`${CONFIG_ROUTER.ANNOUNCEMENT.INDEX}`} element={<ListAnnouncement/>}/>
                     <Route path={`${CONFIG_ROUTER.COMIC.RANKING}`} element={<ListRanking/>}/>
                     <Route path={`${CONFIG_ROUTER.GUIDE.INDEX}`} element={<ListGuide/>}/>
+                    <Route path={CONFIG_ROUTER.PROFILE} element={<Profile/>}/>
                 </Route>
                 <Route path={CONFIG_ROUTER.LOGIN} element={<Login/>}/>
                 <Route path='/403' element={<Forbidden/>}/>
