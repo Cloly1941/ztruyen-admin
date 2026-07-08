@@ -2,6 +2,7 @@ export const CONFIG_ROUTER = {
     HOME: '/',
     FORBIDDEN: '/403',
     LOGIN: '/login',
+    PROFILE: '/profile',
     USER: {
         INDEX: '/users',
         BAN: '/ban',
