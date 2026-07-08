@@ -6,7 +6,7 @@ description: Pushes the current branch and opens a pull request following the pr
 ## Steps
 
 ### 1. Pre-flight checks
-- Confirm current branch is not `main` or `develop`.
+- Confirm current branch is not `main` or `dev`.
 - Confirm there are commits ahead of the base branch (`git log <base>..HEAD`).
 - Confirm working tree is clean (no uncommitted changes) — if not, ask whether to commit first (can delegate to the git-commit skill).
 
@@ -38,7 +38,7 @@ Jira: <link hoặc ID>
 <Nếu là thay đổi UI thì yêu cầu người dùng đính kèm ảnh hoặc ghi "N/A">
 
 ### 5. Confirm before opening
-- Show the proposed PR title, description, and target branch (default: `develop`, unless hotfix → `main`) to the user.
+- Show the proposed PR title, description, and target branch (default: `dev`, unless hotfix → `main`) to the user.
 - Wait for explicit confirmation.
 
 ### 6. Open the PR
