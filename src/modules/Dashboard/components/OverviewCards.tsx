@@ -113,21 +113,21 @@ export function OverviewCards({ data, isLoading, isError, refetch }: OverviewCar
     // Card items definition
     const cards = [
         {
-            title: "Tổng số độc giả",
+            title: "Tổng số người dùng",
             value: totalUsers.toLocaleString("vi-VN"),
             icon: Users,
             iconClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
             extra: null,
         },
         {
-            title: "Độc giả mới",
+            title: "Người dùng mới",
             value: newUsersCurrentPeriod.toLocaleString("vi-VN"),
             icon: UserPlus,
             iconClass: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
             extra: null,
         },
         {
-            title: "Tăng trưởng",
+            title: "Tỷ lệ tăng trưởng",
             value: growth.text,
             icon: GrowthIcon || TrendingUp,
             iconClass: growth.bgClass,
@@ -162,9 +162,8 @@ export function OverviewCards({ data, isLoading, isError, refetch }: OverviewCar
                         </div>
                         <div className="flex items-baseline mt-2">
                             <span
-                                className={`text-2xl font-bold tracking-tight text-foreground ${
-                                    card.isGrowth ? growth.colorClass : ""
-                                }`}
+                                className={`text-2xl font-bold tracking-tight text-foreground ${card.isGrowth ? growth.colorClass : ""
+                                    }`}
                             >
                                 {card.value}
                             </span>

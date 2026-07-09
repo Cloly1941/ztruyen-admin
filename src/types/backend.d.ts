@@ -224,7 +224,7 @@ export interface IDashboardRegistration {
 }
 
 export interface IDashboardDemographic {
-    range: string;
+    group: string;
     count: number;
 }
 

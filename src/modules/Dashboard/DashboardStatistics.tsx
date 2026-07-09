@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { FilterBar } from "@/modules/Dashboard/components/FilterBar";
 import { OverviewCards } from "@/modules/Dashboard/components/OverviewCards";
 import { RegistrationsChart } from "@/modules/Dashboard/components/RegistrationsChart";
 import { DemographicsChart } from "@/modules/Dashboard/components/DemographicsChart";
@@ -8,30 +7,78 @@ import { TopComicsList } from "@/modules/Dashboard/components/TopComicsList";
 import useGetMethod from "@/hooks/common/useGetMethod";
 import { DashboardService } from "@/services/dashboard";
 import { CONFIG_QUERY_KEY } from "@/configs/query-key";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { vi } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, CalendarIcon } from "lucide-react";
 import { toast } from "react-hot-toast";
+import type { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const getDefaultRange = () => {
+    const to = new Date();
+    to.setHours(23, 59, 59, 999);
+    const from = subDays(to, 29);
+    from.setHours(0, 0, 0, 0);
+    return { from, to };
+};
+
+const isSameDay = (d1: Date | undefined, d2: Date | undefined) => {
+    if (!d1 || !d2) return false;
+    return (
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+    );
+};
 
 export default function DashboardStatistics() {
     // Overview filter state
     const [overviewDateRange, setOverviewDateRange] = useState<{
         from: Date | undefined;
         to: Date | undefined;
-    }>({
-        from: undefined,
-        to: undefined,
+    }>(() => getDefaultRange());
+
+    const [overviewOpen, setOverviewOpen] = useState(false);
+    const [overviewLocalRange, setOverviewLocalRange] = useState<DateRange | undefined>({
+        from: overviewDateRange.from,
+        to: overviewDateRange.to,
     });
+
+    const [prevOverviewFrom, setPrevOverviewFrom] = useState<Date | undefined>(overviewDateRange.from);
+    const [prevOverviewTo, setPrevOverviewTo] = useState<Date | undefined>(overviewDateRange.to);
+
+    const isOverviewFromChanged = overviewDateRange.from?.getTime() !== prevOverviewFrom?.getTime();
+    const isOverviewToChanged = overviewDateRange.to?.getTime() !== prevOverviewTo?.getTime();
+
+    if (isOverviewFromChanged || isOverviewToChanged) {
+        setPrevOverviewFrom(overviewDateRange.from);
+        setPrevOverviewTo(overviewDateRange.to);
+        setOverviewLocalRange({ from: overviewDateRange.from, to: overviewDateRange.to });
+    }
+
+    const handleOverviewSelect = (range: DateRange | undefined) => {
+        setOverviewLocalRange(range);
+        if (range?.from && range?.to) {
+            setOverviewDateRange({ from: range.from, to: range.to });
+            setOverviewOpen(false);
+        }
+    };
+
+    const displayOverviewLabel = () => {
+        if (overviewDateRange.from && overviewDateRange.to) {
+            return `${format(overviewDateRange.from, "dd/MM/yyyy", { locale: vi })} - ${format(overviewDateRange.to, "dd/MM/yyyy", { locale: vi })}`;
+        }
+        return "Chọn khoảng ngày";
+    };
 
     // Registrations filter state
     const [registrationsDateRange, setRegistrationsDateRange] = useState<{
         from: Date | undefined;
         to: Date | undefined;
-    }>({
-        from: undefined,
-        to: undefined,
-    });
+    }>(() => getDefaultRange());
     const [registrationsGranularity, setRegistrationsGranularity] = useState<"day" | "month" | "year">("day");
 
     // Overview Query: dependent on overviewDateRange
@@ -120,20 +167,29 @@ export default function DashboardStatistics() {
 
     useEffect(() => {
         if (isDemographicsError && demographicsError) {
-            toast.error("Không thể tải cơ cấu độc giả.", { id: "demographics-error" });
+            toast.error("Không thể tải độ tuổi người dùng.", { id: "demographics-error" });
         }
     }, [isDemographicsError, demographicsError]);
 
+    const defaultRange = getDefaultRange();
+
+    const isDefaultOverview =
+        isSameDay(overviewDateRange.from, defaultRange.from) &&
+        isSameDay(overviewDateRange.to, defaultRange.to);
+
+    const isDefaultRegistrations =
+        isSameDay(registrationsDateRange.from, defaultRange.from) &&
+        isSameDay(registrationsDateRange.to, defaultRange.to);
+
     const hasActiveFilters =
-        overviewDateRange.from !== undefined ||
-        overviewDateRange.to !== undefined ||
-        registrationsDateRange.from !== undefined ||
-        registrationsDateRange.to !== undefined ||
+        !isDefaultOverview ||
+        !isDefaultRegistrations ||
         registrationsGranularity !== "day";
 
     const handleResetFilters = () => {
-        setOverviewDateRange({ from: undefined, to: undefined });
-        setRegistrationsDateRange({ from: undefined, to: undefined });
+        const defaultRangeVal = getDefaultRange();
+        setOverviewDateRange(defaultRangeVal);
+        setRegistrationsDateRange(defaultRangeVal);
         setRegistrationsGranularity("day");
     };
 
@@ -154,40 +210,64 @@ export default function DashboardStatistics() {
                     <h1 className="text-[28px] font-bold tracking-[-0.02em] text-foreground">
                         Tổng quan thống kê
                     </h1>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                        <p className="text-muted-foreground text-sm">
-                            Xem báo cáo hoạt động và thống kê hệ thống của ZTruyện
+                    {generatedAtStr && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                            Cập nhật lúc: {generatedAtStr}
                         </p>
-                        {generatedAtStr && (
-                            <>
-                                <span className="hidden sm:inline text-muted-foreground/40 text-xs">•</span>
-                                <p className="text-muted-foreground text-xs">
-                                    Số liệu tính đến: {generatedAtStr}
-                                </p>
-                            </>
-                        )}
-                    </div>
+                    )}
                 </div>
-                {hasActiveFilters && (
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleResetFilters}
-                        className="h-9 px-3 gap-2 text-muted-foreground hover:text-foreground self-start sm:self-auto animate-in fade-in duration-200"
-                    >
-                        <RotateCcw className="h-4 w-4" />
-                        Đặt lại bộ lọc
-                    </Button>
-                )}
-            </div>
+                <div className="flex items-center gap-3 self-start sm:self-auto">
+                    {/* Overview Date Filter */}
+                    <Popover open={overviewOpen} onOpenChange={setOverviewOpen}>
+                        <PopoverTrigger asChild>
+                            <button
+                                id="overview-date-range-picker"
+                                type="button"
+                                className={cn(
+                                    "inline-flex items-center w-full sm:w-[240px] justify-start text-left font-normal border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 rounded-md h-9 px-3 py-2 text-sm transition-all outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] hover:border-primary/50",
+                                    !overviewDateRange.from && "text-muted-foreground"
+                                )}
+                            >
+                                <CalendarIcon className="mr-2 size-4 text-muted-foreground" />
+                                <span>{displayOverviewLabel()}</span>
+                            </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 border bg-popover" align="end">
+                            <Calendar
+                                initialFocus
+                                mode="range"
+                                defaultMonth={overviewLocalRange?.from}
+                                selected={overviewLocalRange}
+                                onSelect={handleOverviewSelect}
+                                numberOfMonths={2}
+                                locale={vi}
+                                disabled={(date) => {
+                                    const today = new Date();
+                                    today.setHours(23, 59, 59, 999);
+                                    return date > today;
+                                }}
+                            />
+                            {overviewLocalRange?.from && !overviewLocalRange?.to && (
+                                <p className="px-4 py-2 text-xs text-muted-foreground text-center border-t">
+                                    Chọn ngày kết thúc
+                                </p>
+                            )}
+                        </PopoverContent>
+                    </Popover>
 
-            {/* Overview Filter Bar */}
-            <FilterBar
-                title="Số liệu tổng quan"
-                showGranularity={false}
-                dateRange={overviewDateRange}
-                onDateRangeChange={setOverviewDateRange}
-            />
+                    {hasActiveFilters && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleResetFilters}
+                            className="h-9 px-3 gap-2 text-muted-foreground hover:text-foreground animate-in fade-in duration-200"
+                        >
+                            <RotateCcw className="h-4 w-4" />
+                            Đặt lại bộ lọc
+                        </Button>
+                    )}
+                </div>
+            </div>
 
             {/* Overview Cards Grid — 1 col mobile / 2 col tablet / 4 col desktop */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -202,31 +282,21 @@ export default function DashboardStatistics() {
             {/* Charts Grid — 1 col mobile / 2/3 + 1/3 desktop */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Registrations Chart Section */}
-                <div className="lg:col-span-2 space-y-4">
-                    <FilterBar
-                        title="Lượt đăng ký thành viên"
-                        showGranularity={true}
-                        dateRange={registrationsDateRange}
-                        granularity={registrationsGranularity}
-                        onDateRangeChange={setRegistrationsDateRange}
-                        onGranularityChange={setRegistrationsGranularity}
-                    />
+                <div className="lg:col-span-2">
                     <RegistrationsChart
                         data={registrationsData?.data?.data}
                         isLoading={isRegistrationsLoading}
                         isError={isRegistrationsError}
                         refetch={refetchRegistrations}
+                        dateRange={registrationsDateRange}
                         granularity={registrationsGranularity}
+                        onDateRangeChange={setRegistrationsDateRange}
+                        onGranularityChange={setRegistrationsGranularity}
                     />
                 </div>
 
                 {/* Demographics Chart Section */}
-                <div className="lg:col-span-1 space-y-4">
-                    <div className="flex items-center h-[68px] px-4 rounded-xl border bg-card/50 backdrop-blur-md shadow-xs">
-                        <h3 className="text-base font-semibold tracking-tight text-foreground">
-                            Cơ cấu độc giả
-                        </h3>
-                    </div>
+                <div className="lg:col-span-1">
                     <DemographicsChart
                         data={demographicsData?.data?.data}
                         isLoading={isDemographicsLoading}
