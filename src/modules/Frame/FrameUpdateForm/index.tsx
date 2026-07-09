@@ -1,27 +1,34 @@
 // ** React
 import {useState, useRef, useEffect, type ChangeEvent} from "react";
 
-// ** React hot toast
-import toast from "react-hot-toast";
-
-// ** Shadcn ui
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
-import {DialogClose, DialogFooter} from "@/components/ui/dialog.tsx";
+// ** React hook form
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Zod
 import {z} from "zod";
 
+// ** Library
+import toast from "react-hot-toast";
+
 // ** Icon
 import {Upload, X} from "lucide-react";
 
+// ** Shadcn ui
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
+import {DialogClose, DialogFooter} from "@/components/ui/dialog.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {Field, FieldError, FieldLabel} from "@/components/ui/field.tsx";
+
 // ** Component
 import Button from "@/components/common/Button";
+import {FrameUpdateFormSkeleton} from "@/skeletons/pages/frame";
 
-// ** Hooks
+// ** Hook
 import useGetMethod from "@/hooks/common/useGetMethod.ts";
 import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
 
-// ** Services
+// ** Service
 import {FrameService} from "@/services/frame";
 import {UploadService} from "@/services/upload";
 
@@ -30,12 +37,6 @@ import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
 // ** Type
 import type {IFrame, IUpdated} from "@/types/backend";
-
-// ** UI
-import {Input} from "@/components/ui/input.tsx";
-import {Controller, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Field, FieldError, FieldLabel} from "@/components/ui/field.tsx";
 
 export const formSchema = z.object({
     name: z.string().min(1, "Tên khung avatar không được để trống"),
@@ -114,7 +115,7 @@ const FrameUpdateForm = ({id, onSuccess}: TFrameUpdateForm) => {
         if (inputRef.current) inputRef.current.value = "";
     };
 
-    if (isLoading) return 'Đang tải khung avatar...';
+    if (isLoading) return <FrameUpdateFormSkeleton />;
     if (!frame) return 'Không tìm thấy thông tin khung avatar.';
 
     const onSubmit = async (values: TFrameForm) => {
