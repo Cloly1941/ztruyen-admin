@@ -12,6 +12,7 @@ import {Calendar} from "@/components/ui/calendar"
 
 // ** Component
 import Button from "@/components/common/Button";
+import {UserUpdateFormSkeleton} from "@/skeletons/pages/user";
 
 // ** Zod
 import {z} from "zod";
@@ -134,7 +135,7 @@ const UserUpdateForm = ({id, onSuccess}: TUserUpdateFormProps) => {
         onSuccess?.()
     }
 
-    if (isLoading) return 'Đang tải thông tin người dùng...'
+    if (isLoading) return <UserUpdateFormSkeleton />
 
     if (!userDetail) return 'Không tìm thấy thông tin người dùng.'
 

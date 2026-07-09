@@ -16,6 +16,7 @@ import {Upload, X} from "lucide-react";
 
 // ** Component
 import Button from "@/components/common/Button";
+import {UpdateAvatarFormSkeleton} from "@/skeletons/pages/user";
 
 // ** Hooks
 import useGetMethod from "@/hooks/common/useGetMethod.ts";
@@ -113,7 +114,7 @@ const UpdateAvatarForm = ({id, onSuccess}: TUpdateAvatarForm) => {
        }
     };
 
-    if (isLoading) return 'Đang tải ảnh đại diện...'
+    if (isLoading) return <UpdateAvatarFormSkeleton />
 
     if (!userDetail) return 'Không tìm thấy thông tin người dùng.'
 
