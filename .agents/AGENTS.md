@@ -73,3 +73,12 @@ src/components/
     ├── dropdown-menu.tsx   # AppDropdownMenu, wraps original DropdownMenu
     └── ...
 ```
+
+---
+
+## Import Commenting Rules
+
+- **Group and Comment Imports**: All `import` statements must be logically grouped, with each group prefixed by a double-asterisk comment matching: `// ** <Group Name>` (e.g. `// ** Shadcn ui`, `// ** Component`, `// ** Hook`, `// ** Service`, `// ** Type`, `// ** Config`).
+- **Consistent Formatting**: Ensure there is exactly one empty line between import groups, and exactly one space after `// **`.
+- **Preserve Formatting**: When automatically adding or modifying imports, AI agents must strictly maintain this grouped comment structure.
+
