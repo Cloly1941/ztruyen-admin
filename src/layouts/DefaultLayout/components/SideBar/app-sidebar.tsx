@@ -1,6 +1,9 @@
 "use client"
 
+// ** React
 import * as React from "react"
+
+// ** Icon
 import {
     BarChart, Bell,
     Frame,
@@ -8,9 +11,7 @@ import {
     Users,
 } from "lucide-react"
 
-import {NavMain} from "@/layouts/DefaultLayout/components/SideBar/nav-main.tsx"
-import {NavUser} from "@/layouts/DefaultLayout/components/SideBar/nav-user.tsx"
-import {TeamSwitcher} from "@/layouts/DefaultLayout/components/SideBar/team-switcher.tsx"
+// ** Shadcn ui
 import {
     Sidebar,
     SidebarContent,
@@ -18,11 +19,20 @@ import {
     SidebarHeader,
     SidebarRail,
 } from "@/components/ui/sidebar.tsx"
+
+// ** Component
+import {NavMain} from "@/layouts/DefaultLayout/components/SideBar/nav-main.tsx"
+import {NavUser} from "@/layouts/DefaultLayout/components/SideBar/nav-user.tsx"
+import {TeamSwitcher} from "@/layouts/DefaultLayout/components/SideBar/team-switcher.tsx"
+
+// ** Hook
 import {useAuth} from "@/hooks/common/useAuth.ts";
-import type {IUserProfile} from "@/types/backend";
 
 // ** Config
 import {CONFIG_ROUTER} from "@/configs/router";
+
+// ** Type
+import type {IUserProfile} from "@/types/backend";
 
 // This is sample data.
 const data = {
