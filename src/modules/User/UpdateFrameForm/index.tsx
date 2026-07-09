@@ -1,17 +1,17 @@
-import { DialogClose, DialogFooter } from "@/components/ui/dialog.tsx";
-import Button from "@/components/common/Button";
+// ** React
 import { useEffect, useState } from "react";
-import useGetMethod from "@/hooks/common/useGetMethod.ts";
-import type { IFrame } from "@/types/backend";
-import { FrameService } from "@/services/frame";
-import { CONFIG_QUERY_KEY } from "@/configs/query-key";
-import toast from "react-hot-toast";
+
+// ** React query
 import { useQueryClient } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
-import { UserService } from "@/services/user";
+
+// ** Library
+import toast from "react-hot-toast";
+
+// ** Icon
 import { ChevronLeft, ChevronRight, Search, ArrowUpDown, Check } from "lucide-react";
-import AvatarWithFrame from "@/components/common/AvatarWithFrame";
-import { useDebounce } from "@/hooks/common/useDebounce";
+
+// ** Shadcn ui
+import { DialogClose, DialogFooter } from "@/components/ui/dialog.tsx";
 import { Input } from "@/components/ui/input";
 import {
     DropdownMenu,
@@ -19,6 +19,28 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+// ** Component
+import Button from "@/components/common/Button";
+import AvatarWithFrame from "@/components/common/AvatarWithFrame";
+import { UpdateFrameFormSkeleton } from "@/skeletons/pages/user";
+
+// ** Hook
+import useGetMethod from "@/hooks/common/useGetMethod.ts";
+import { useDebounce } from "@/hooks/common/useDebounce";
+
+// ** Service
+import { FrameService } from "@/services/frame";
+import { UserService } from "@/services/user";
+
+// ** Config
+import { CONFIG_QUERY_KEY } from "@/configs/query-key";
+
+// ** Util
+import { cn } from "@/lib/utils";
+
+// ** Type
+import type { IFrame } from "@/types/backend";
 
 
 type TSortOption = { label: string; value: string };
@@ -135,11 +157,8 @@ const UpdateFrameForm = ({ id, avatarName, avatarUrl, frameId, onSuccess }: TUpd
                 </DropdownMenu>
             </div>
 
-            {/* Frame list */}
             {isLoading ? (
-                <div className="text-sm text-muted-foreground text-center py-6">
-                    Đang tải khung avatar...
-                </div>
+                <UpdateFrameFormSkeleton />
             ) : !listFrame?.length ? (
                 <div className="text-sm text-muted-foreground text-center py-6">
                     {search ? `Không tìm thấy khung "${search}"` : "Không tìm thấy danh sách khung."}

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 
 // ** Component
 import AvatarWithFrame from "@/components/common/AvatarWithFrame";
+import {UserDetailSkeleton} from "@/skeletons/pages/user";
 
 // ** Shadcn ui
 import {Separator} from "@/components/ui/separator.tsx";
@@ -49,11 +50,7 @@ const UserDetail = ({id, api, queryKey}: TUserDetail) => {
 
     const userDetail = data?.data
 
-    if (isLoading) return (
-        <div className="flex items-center justify-center py-10 text-muted-foreground text-sm animate-pulse">
-            Đang tải thông tin người dùng...
-        </div>
-    )
+    if (isLoading) return <UserDetailSkeleton />
 
     if (!userDetail) return (
         <div className="flex items-center justify-center py-10 text-muted-foreground text-sm">
