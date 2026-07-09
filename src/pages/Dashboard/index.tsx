@@ -1,10 +1,17 @@
+import {Helmet} from "react-helmet-async";
+import DashboardStatistics from "@/modules/Dashboard/DashboardStatistics";
 
 const Dashboard = () => {
     return (
-        <div className='h-[100vh] w-full'>
+        <>
+            <Helmet>
+                <title>Thống kê tổng quan - ZTruyen Admin</title>
+                <meta name="description" content="Thống kê tổng quan hệ thống của ZTruyen"/>
+                <meta name="robots" content="noindex, nofollow"/>
+            </Helmet>
+            <DashboardStatistics />
+        </>
+    );
+};
 
-        </div>
-    )
-}
-
-export default Dashboard
+export default Dashboard;

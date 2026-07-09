@@ -97,7 +97,7 @@ const data = {
             url: "#",
             icon: BarChart,
             items: [
-                {title: "Tổng quan", url: "#"},
+                {title: "Tổng quan", url: CONFIG_ROUTER.HOME},
                 {title: "Bảng xếp hạng tuần", url: CONFIG_ROUTER.COMIC.RANKING},
             ],
         }
