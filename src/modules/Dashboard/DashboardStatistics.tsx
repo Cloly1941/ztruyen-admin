@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { FilterBar } from "@/modules/Dashboard/components/FilterBar";
 import { OverviewCards } from "@/modules/Dashboard/components/OverviewCards";
+import { RegistrationsChart } from "@/modules/Dashboard/components/RegistrationsChart";
+import { DemographicsChart } from "@/modules/Dashboard/components/DemographicsChart";
 import useGetMethod from "@/hooks/common/useGetMethod";
 import { DashboardService } from "@/services/dashboard";
 import { CONFIG_QUERY_KEY } from "@/configs/query-key";
@@ -80,7 +82,13 @@ export default function DashboardStatistics() {
             ),
         [registrationsDateRange.from, registrationsDateRange.to, registrationsGranularity]
     );
-    useGetMethod({
+    const {
+        data: registrationsData,
+        isLoading: isRegistrationsLoading,
+        isError: isRegistrationsError,
+        error: registrationsError,
+        refetch: refetchRegistrations,
+    } = useGetMethod({
         api: registrationsApi,
         key: [
             CONFIG_QUERY_KEY.DASHBOARD.REGISTRATIONS,
@@ -92,11 +100,29 @@ export default function DashboardStatistics() {
         ],
     });
 
+    useEffect(() => {
+        if (isRegistrationsError && registrationsError) {
+            toast.error("Không thể tải số liệu lượt đăng ký.", { id: "registrations-error" });
+        }
+    }, [isRegistrationsError, registrationsError]);
+
     // Demographics Query: ignores date range
-    useGetMethod({
+    const {
+        data: demographicsData,
+        isLoading: isDemographicsLoading,
+        isError: isDemographicsError,
+        error: demographicsError,
+        refetch: refetchDemographics,
+    } = useGetMethod({
         api: (signal) => DashboardService.demographics(signal),
         key: [CONFIG_QUERY_KEY.DASHBOARD.DEMOGRAPHICS],
     });
+
+    useEffect(() => {
+        if (isDemographicsError && demographicsError) {
+            toast.error("Không thể tải cơ cấu độc giả.", { id: "demographics-error" });
+        }
+    }, [isDemographicsError, demographicsError]);
 
     // Top Genres Query: ignores date range
     useGetMethod({
@@ -197,9 +223,13 @@ export default function DashboardStatistics() {
                         onDateRangeChange={setRegistrationsDateRange}
                         onGranularityChange={setRegistrationsGranularity}
                     />
-                    <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[350px] flex items-center justify-center text-muted-foreground text-sm">
-                        Biểu đồ chính (Epic 3)
-                    </div>
+                    <RegistrationsChart
+                        data={registrationsData?.data?.data}
+                        isLoading={isRegistrationsLoading}
+                        isError={isRegistrationsError}
+                        refetch={refetchRegistrations}
+                        granularity={registrationsGranularity}
+                    />
                 </div>
 
                 {/* Demographics Chart Section */}
@@ -209,9 +239,12 @@ export default function DashboardStatistics() {
                             Cơ cấu độc giả
                         </h3>
                     </div>
-                    <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[350px] flex items-center justify-center text-muted-foreground text-sm">
-                        Biểu đồ phụ (Epic 3)
-                    </div>
+                    <DemographicsChart
+                        data={demographicsData?.data?.data}
+                        isLoading={isDemographicsLoading}
+                        isError={isDemographicsError}
+                        refetch={refetchDemographics}
+                    />
                 </div>
             </div>
 
