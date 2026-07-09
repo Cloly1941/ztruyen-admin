@@ -202,3 +202,50 @@ export interface IGuide {
     createdAt: string;
     updatedAt: string;
 }
+
+// Dashboard
+export interface IDashboardOverview {
+    total_users: number;
+    new_users_current_period: number;
+    new_users_growth_percent: number;
+    total_favorites: number;
+    meta: {
+        generated_at: string;
+    };
+}
+
+export interface IDashboardRegistration {
+    date: string;
+    count: number;
+}
+
+export interface IDashboardDemographic {
+    range: string;
+    count: number;
+}
+
+export interface IDashboardTopGenre {
+    genre_name: string;
+    count: number;
+}
+
+export interface IDashboardTopComic {
+    comic_name: string;
+    comic_slug: string;
+    count: number;
+}
+
+export interface IDashboardOverviewParams {
+    from?: string;
+    to?: string;
+}
+
+export interface IDashboardRegistrationParams {
+    from?: string;
+    to?: string;
+    type?: 'day' | 'month' | 'year';
+}
+
+export interface IDashboardLimitParams {
+    limit?: number;
+}

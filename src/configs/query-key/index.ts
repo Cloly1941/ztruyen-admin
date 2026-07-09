@@ -34,5 +34,12 @@ export const CONFIG_QUERY_KEY = {
     },
     OTRUYEN: {
         CATEGORY: 'list-category',
+    },
+    DASHBOARD: {
+        OVERVIEW: 'dashboard-overview',
+        REGISTRATIONS: 'dashboard-registrations',
+        DEMOGRAPHICS: 'dashboard-demographics',
+        TOP_GENRES: 'dashboard-top-genres',
+        TOP_COMICS: 'dashboard-top-comics',
     }
-} as const
+} as const
