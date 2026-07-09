@@ -1,7 +1,14 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import type { IDashboardOverview } from "@/types/backend";
+// ** Icon
 import { Users, UserPlus, Heart, TrendingUp, TrendingDown, AlertCircle } from "lucide-react";
+
+// ** Shadcn ui
 import { Button } from "@/components/ui/button";
+
+// ** Component
+import { OverviewCardsSkeleton } from "@/skeletons/pages/dashboard";
+
+// ** Type
+import type { IDashboardOverview } from "@/types/backend";
 
 interface OverviewCardsProps {
     data?: IDashboardOverview;
@@ -13,22 +20,7 @@ interface OverviewCardsProps {
 export function OverviewCards({ data, isLoading, isError, refetch }: OverviewCardsProps) {
     // 1. Loading State (AC 1)
     if (isLoading) {
-        return (
-            <>
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                        key={i}
-                        className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 flex flex-col justify-between h-[120px] animate-pulse"
-                    >
-                        <div className="flex justify-between items-start">
-                            <Skeleton className="h-4 w-28" />
-                            <Skeleton className="h-8 w-8 rounded-lg" />
-                        </div>
-                        <Skeleton className="h-8 w-20 mt-2" />
-                    </div>
-                ))}
-            </>
-        );
+        return <OverviewCardsSkeleton />;
     }
 
     // 2. Error State (AC 4)
