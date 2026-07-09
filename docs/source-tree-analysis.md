@@ -57,6 +57,9 @@ ztruyen-admin/
 │   │   ├── otruyen/         # External OTruyen API client for comic categories
 │   │   ├── upload/          # Single and multi-image upload API calls
 │   │   └── user/            # User CRUD, ban, restore, and Excel import API calls
+│   ├── skeletons/           # Custom loading skeletons for page components
+│   │   └── pages/
+│   │       └── dashboard/   # Dashboard metric cards and chart skeletons
 │   ├── styles/              # Global stylesheet
 │   │   └── index.css        # Tailwind CSS v4 directives and custom utility classes
 │   ├── theme/               # Theme management
