@@ -65,5 +65,13 @@ export const CONFIG_API = {
     },
     OTRUYEN: {
         CATEGORY: '/the-loai'
+    },
+    DASHBOARD: {
+        INDEX: 'dashboard-statistics',
+        OVERVIEW: 'overview',
+        REGISTRATIONS: 'registrations',
+        DEMOGRAPHICS: 'demographics',
+        TOP_GENRES: 'top-genres',
+        TOP_COMICS: 'top-comics',
     }
-} as const
+} as const
