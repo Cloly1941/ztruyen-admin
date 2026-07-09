@@ -1,39 +1,38 @@
 // ** React
 import {useState, useRef, type ChangeEvent, useEffect} from "react";
 
-// ** React hot toast
+// ** React hook form
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+
+// ** Zod
+import {z} from "zod";
+
+// ** Library
 import toast from "react-hot-toast";
+
+// ** Icon
+import {Upload, X} from "lucide-react";
 
 // ** Shadcn ui
 import {DialogClose, DialogFooter} from "@/components/ui/dialog";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
 import {Input} from "@/components/ui/input";
-
-// ** Zod
-import {z} from "zod";
-
-// ** Icon
-import {Upload, X} from "lucide-react";
+import {Field, FieldError, FieldLabel} from "@/components/ui/field";
 
 // ** Component
 import Button from "@/components/common/Button";
-
-// ** Services
-import {EmojiCategoryService} from "@/services/emoji-category";
-
-// ** Config
-import {CONFIG_QUERY_KEY} from "@/configs/query-key";
-
-// ** React hook form
-import {Controller, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-
-// ** UI
-import {Field, FieldError, FieldLabel} from "@/components/ui/field";
+import {EmojiCategoryUpdateFormSkeleton} from "@/skeletons/pages/emojicategory";
 
 // ** Hook
 import useGetMethod from "@/hooks/common/useGetMethod.ts";
 import usePatchWithImage from "@/hooks/common/usePatchWithImage.ts";
+
+// ** Service
+import {EmojiCategoryService} from "@/services/emoji-category";
+
+// ** Config
+import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
 // ** Type
 import type {ICategoryEmoji, IUpdated} from "@/types/backend";
@@ -118,7 +117,7 @@ const EmojiCategoryUpdateForm = ({id, onSuccess}: TEmojiCategoryUpdateForm) => {
         if (inputRef.current) inputRef.current.value = "";
     };
 
-    if (isLoading) return 'Đang tải danh mục emoji...';
+    if (isLoading) return <EmojiCategoryUpdateFormSkeleton />;
     if (!emojiCategory) return 'Không tìm thấy thông tin danh mục emoji.';
 
     const onSubmit = async (values: TEmojiCategoryForm) => {

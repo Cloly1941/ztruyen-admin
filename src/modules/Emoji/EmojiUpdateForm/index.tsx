@@ -4,28 +4,37 @@ import {useState, useRef, type ChangeEvent, useEffect} from "react";
 // ** React query
 import {useQuery} from "@tanstack/react-query";
 
-// ** React hot toast
-import toast from "react-hot-toast";
-
-// ** Shadcn ui
-import {DialogClose, DialogFooter} from "@/components/ui/dialog";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
-import {Input} from "@/components/ui/input";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import {Field, FieldError, FieldLabel} from "@/components/ui/field";
-import {Switch} from "@/components/ui/switch.tsx";
+// ** React hook form
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Zod
 import {z} from "zod";
 
+// ** Library
+import toast from "react-hot-toast";
+
 // ** Icon
 import {Upload, X} from "lucide-react";
 
+// ** Shadcn ui
+import {DialogClose, DialogFooter} from "@/components/ui/dialog";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar.tsx";
+import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Field, FieldError, FieldLabel} from "@/components/ui/field";
+import {Switch} from "@/components/ui/switch.tsx";
+
 // ** Component
 import Button from "@/components/common/Button";
+import {EmojiUpdateFormSkeleton} from "@/skeletons/pages/emoji";
 
-// ** Services
+// ** Hook
+import useGetMethod from "@/hooks/common/useGetMethod.ts";
+import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
+
+// ** Service
 import {EmojiService} from "@/services/emoji";
 import {UploadService} from "@/services/upload";
 import {EmojiCategoryService} from "@/services/emoji-category";
@@ -33,16 +42,8 @@ import {EmojiCategoryService} from "@/services/emoji-category";
 // ** Config
 import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
-// ** React hook form
-import {Controller, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-
 // ** Type
 import type {IDetailEmoji, IUpdated, TType} from "@/types/backend";
-
-// ** Hook
-import useGetMethod from "@/hooks/common/useGetMethod.ts";
-import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
 
 export const formSchema = z.object({
     type: z.enum(["image", "text"]),
@@ -152,7 +153,7 @@ const EmojiUpdateForm = ({id, onSuccess}: TEmojiUpdateForm) => {
         if (inputRef.current) inputRef.current.value = "";
     };
 
-    if (isLoading) return 'Đang tải chi tiết emoji...';
+    if (isLoading) return <EmojiUpdateFormSkeleton />;
     if (!emoji) return 'Không tìm thấy thông tin emoji.';
 
     const onSubmit = async (values: TEmojiForm) => {

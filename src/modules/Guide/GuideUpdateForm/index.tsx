@@ -1,7 +1,14 @@
 // ** React
 import {useEffect} from "react";
 
-// ** React hot toast
+// ** React hook form
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+
+// ** Zod
+import {z} from "zod";
+
+// ** Library
 import toast from "react-hot-toast";
 
 // ** Shadcn ui
@@ -17,25 +24,19 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-// ** Zod
-import {z} from "zod";
-
 // ** Component
 import Button from "@/components/common/Button";
-
-// ** Services
-import {GuideService} from "@/services/guide";
-
-// ** Config
-import {CONFIG_QUERY_KEY} from "@/configs/query-key";
-
-// ** React hook form
-import {Controller, useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
+import {GuideUpdateFormSkeleton} from "@/skeletons/pages/guide";
 
 // ** Hook
 import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
 import useGetMethod from "@/hooks/common/useGetMethod.ts";
+
+// ** Service
+import {GuideService} from "@/services/guide";
+
+// ** Config
+import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
 // ** Type
 import type {IGuide, IUpdated, TPlatform} from "@/types/backend";
@@ -100,7 +101,7 @@ const GuideUpdate = ({id, onSuccess}: TGuideUpdate) => {
         onSuccess?.();
     };
 
-    if (isLoading) return "Đang tải hướng dẫn...";
+    if (isLoading) return <GuideUpdateFormSkeleton />;
     if (!guide) return "Không tìm thấy thông tin hướng dẫn.";
 
     return (
