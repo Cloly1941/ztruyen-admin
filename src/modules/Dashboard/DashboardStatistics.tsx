@@ -212,15 +212,6 @@ export default function DashboardStatistics() {
         setRegistrationsGranularity("day");
     };
 
-    const generatedAt = overviewData?.data?.meta?.generated_at;
-    let generatedAtStr = "";
-    if (generatedAt) {
-        const parsedDate = new Date(generatedAt);
-        if (!isNaN(parsedDate.getTime())) {
-            generatedAtStr = format(parsedDate, "HH:mm:ss dd/MM/yyyy", { locale: vi });
-        }
-    }
-
     return (
         <div className="space-y-6 p-0 md:p-2">
             {/* Page Title */}
@@ -229,11 +220,6 @@ export default function DashboardStatistics() {
                     <h1 className="text-[28px] font-bold tracking-[-0.02em] text-foreground">
                         Tổng quan thống kê
                     </h1>
-                    {generatedAtStr && (
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                            Cập nhật lúc: {generatedAtStr}
-                        </p>
-                    )}
                 </div>
                 <div className="flex items-center gap-3 self-start sm:self-auto">
                     {/* Overview Date Filter */}
