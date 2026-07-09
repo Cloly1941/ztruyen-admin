@@ -3,6 +3,8 @@ import { FilterBar } from "@/modules/Dashboard/components/FilterBar";
 import { OverviewCards } from "@/modules/Dashboard/components/OverviewCards";
 import { RegistrationsChart } from "@/modules/Dashboard/components/RegistrationsChart";
 import { DemographicsChart } from "@/modules/Dashboard/components/DemographicsChart";
+import { TopGenresList } from "@/modules/Dashboard/components/TopGenresList";
+import { TopComicsList } from "@/modules/Dashboard/components/TopComicsList";
 import useGetMethod from "@/hooks/common/useGetMethod";
 import { DashboardService } from "@/services/dashboard";
 import { CONFIG_QUERY_KEY } from "@/configs/query-key";
@@ -31,8 +33,6 @@ export default function DashboardStatistics() {
         to: undefined,
     });
     const [registrationsGranularity, setRegistrationsGranularity] = useState<"day" | "month" | "year">("day");
-
-    const limit = 10;
 
     // Overview Query: dependent on overviewDateRange
     const overviewApi = useCallback(
@@ -123,18 +123,6 @@ export default function DashboardStatistics() {
             toast.error("Không thể tải cơ cấu độc giả.", { id: "demographics-error" });
         }
     }, [isDemographicsError, demographicsError]);
-
-    // Top Genres Query: ignores date range
-    useGetMethod({
-        api: (signal) => DashboardService.topGenres({ limit }, signal),
-        key: [CONFIG_QUERY_KEY.DASHBOARD.TOP_GENRES, { limit }],
-    });
-
-    // Top Comics Query: ignores date range
-    useGetMethod({
-        api: (signal) => DashboardService.topComics({ limit }, signal),
-        key: [CONFIG_QUERY_KEY.DASHBOARD.TOP_COMICS, { limit }],
-    });
 
     const hasActiveFilters =
         overviewDateRange.from !== undefined ||
@@ -249,13 +237,9 @@ export default function DashboardStatistics() {
             </div>
 
             {/* Lists Grid — 1 col mobile / 50-50 tablet+ */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[300px] flex items-center justify-center text-muted-foreground text-sm">
-                    Danh sách 1 (Epic 4)
-                </div>
-                <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[300px] flex items-center justify-center text-muted-foreground text-sm">
-                    Danh sách 2 (Epic 4)
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <TopGenresList />
+                <TopComicsList />
             </div>
         </div>
     );
