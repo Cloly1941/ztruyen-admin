@@ -1,10 +1,14 @@
+// ** React
 import { useEffect, useState } from "react";
-import useGetMethod from "@/hooks/common/useGetMethod";
-import { DashboardService } from "@/services/dashboard";
-import { CONFIG_QUERY_KEY } from "@/configs/query-key";
-import { toast } from "react-hot-toast";
-import { Button } from "@/components/ui/button";
+
+// ** Icon
 import { AlertCircle, RotateCcw } from "lucide-react";
+
+// ** Library
+import { toast } from "react-hot-toast";
+
+// ** Shadcn ui
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/components/ui/card";
 import {
     Select,
@@ -13,7 +17,20 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+
+// ** Component
+import { TopListSkeleton } from "@/skeletons/pages/dashboard";
+
+// ** Hook
+import useGetMethod from "@/hooks/common/useGetMethod";
+
+// ** Service
+import { DashboardService } from "@/services/dashboard";
+
+// ** Config
+import { CONFIG_QUERY_KEY } from "@/configs/query-key";
+
+// ** Utils
 import { getRankBadgeClass } from "@/utils/renderRankBadge";
 
 export function TopComicsList() {
@@ -55,20 +72,7 @@ export function TopComicsList() {
             </CardHeader>
             <CardContent className="flex-1 py-4">
                 {isLoading ? (
-                    <div className="space-y-4">
-                        {Array.from({ length: limit }).map((_, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center justify-between py-3 border-b last:border-0 border-border/50 animate-pulse"
-                            >
-                                <div className="flex items-center gap-3 min-w-0 flex-1">
-                                    <Skeleton className="h-6 w-6 rounded-full shrink-0" />
-                                    <Skeleton className="h-4 w-32 sm:w-48 max-w-full" />
-                                </div>
-                                <Skeleton className="h-4 w-12 shrink-0 ml-2" />
-                            </div>
-                        ))}
-                    </div>
+                    <TopListSkeleton limit={limit} />
                 ) : isError ? (
                     <div className="h-full min-h-[200px] flex flex-col items-center justify-center text-center space-y-4 py-8 animate-in fade-in duration-200">
                         <div className="p-3 bg-destructive/10 rounded-full text-destructive">

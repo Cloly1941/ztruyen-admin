@@ -1,13 +1,19 @@
+// ** React
 import * as React from "react";
+
+// ** Recharts
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+
+// ** Date
 import { format, parseISO } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
-import { AlertCircle, CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
+// ** Icon
+import { AlertCircle, CalendarIcon } from "lucide-react";
+
+// ** Shadcn ui
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +22,14 @@ import {
     AppChartTooltip,
     AppChartTooltipContent
 } from "@/components/custom-ui/chart";
+
+// ** Component
+import { RegistrationsChartSkeleton } from "@/skeletons/pages/dashboard";
+
+// ** Utils
+import { cn } from "@/lib/utils";
+
+// ** Type
 import type { ChartConfig } from "@/components/custom-ui/chart";
 import type { IDashboardRegistration } from "@/types/backend";
 
@@ -188,15 +202,7 @@ export function RegistrationsChart({
             {/* Content Area */}
             <div className="flex-1 w-full min-w-0 h-full min-h-0 relative">
                 {isLoading ? (
-                    <div className="absolute inset-0 flex items-end justify-between gap-4 pt-4">
-                        {Array.from({ length: 12 }).map((_, i) => (
-                            <Skeleton
-                                key={i}
-                                className="w-full rounded-t-md bg-accent/60"
-                                style={{ height: `${((i * 17 + 23) % 60) + 20}%` }}
-                            />
-                        ))}
-                    </div>
+                    <RegistrationsChartSkeleton />
                 ) : isError ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center space-y-3">
                         <div className="p-2.5 bg-destructive/10 rounded-full text-destructive">

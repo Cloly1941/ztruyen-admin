@@ -1,4 +1,7 @@
+// ** Helmet
 import {Helmet} from "react-helmet-async";
+
+// ** Module
 import DashboardStatistics from "@/modules/Dashboard/DashboardStatistics";
 
 const Dashboard = () => {
