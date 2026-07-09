@@ -1,26 +1,18 @@
-// ** React hot toast
-import toast from "react-hot-toast";
-
-// ** Shadcn ui
-import {DialogClose, DialogFooter} from "@/components/ui/dialog";
-
-// ** Zod
-import {z} from "zod";
-
-// ** Component
-import Button from "@/components/common/Button";
-
-// ** Services
-import {AnnouncementService} from "@/services/announcement";
-
-// ** Config
-import {CONFIG_QUERY_KEY} from "@/configs/query-key";
+// ** React
+import {useEffect} from "react";
 
 // ** React hook form
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
-// ** UI
+// ** Zod
+import {z} from "zod";
+
+// ** Library
+import toast from "react-hot-toast";
+
+// ** Shadcn ui
+import {DialogClose, DialogFooter} from "@/components/ui/dialog";
 import {Field, FieldError, FieldLabel} from "@/components/ui/field";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
@@ -32,14 +24,23 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+// ** Component
+import Button from "@/components/common/Button";
+import {AnnouncementUpdateFormSkeleton} from "@/skeletons/pages/announcement";
+
 // ** Hook
 import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
+import useGetMethod from "@/hooks/common/useGetMethod.ts";
+
+// ** Service
+import {AnnouncementService} from "@/services/announcement";
+
+// ** Config
+import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 
 // ** Type
 import type {IAnnouncement, IUpdated, TTypeAnnouncement} from "@/types/backend";
 import {ANNOUNCEMENT_TYPE_OPTIONS} from "@/modules/Announcement/AnnouncementCreateForm";
-import {useEffect} from "react";
-import useGetMethod from "@/hooks/common/useGetMethod.ts";
 
 export const formSchema = z.object({
     title: z.string().min(1, "Tiêu đề không được để trống"),
@@ -104,7 +105,7 @@ const AnnouncementUpdate = ({id, onSuccess}: TAnnouncementUpdate) => {
         onSuccess?.();
     };
 
-    if (isLoading) return 'Đang tải thông báo...';
+    if (isLoading) return <AnnouncementUpdateFormSkeleton />;
     if (!announcement) return 'Không tìm thấy thông tin thông báo.';
 
     return (

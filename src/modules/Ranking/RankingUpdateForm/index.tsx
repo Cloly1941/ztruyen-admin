@@ -1,22 +1,21 @@
-// ** React hot toast
-import toast from "react-hot-toast";
+// ** React
+import {useEffect} from "react";
 
 // ** React query
 import {useQuery} from "@tanstack/react-query";
 
 // ** React hook form
 import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 // ** Zod
 import {z} from "zod";
-import {zodResolver} from "@hookform/resolvers/zod";
 
-// ** Component
-import MultiSelectDropdown from "@/components/common/MultiSelectDropdown";
+// ** Library
+import toast from "react-hot-toast";
 
 // ** Shadcn ui
 import {DialogClose, DialogFooter} from "@/components/ui/dialog";
-import Button from "@/components/common/Button";
 import {Field, FieldError, FieldLabel} from "@/components/ui/field";
 import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
@@ -28,20 +27,24 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-// ** Config
-import {CONFIG_QUERY_KEY} from "@/configs/query-key";
+// ** Component
+import MultiSelectDropdown from "@/components/common/MultiSelectDropdown";
+import Button from "@/components/common/Button";
+import {RankingUpdateFormSkeleton} from "@/skeletons/pages/ranking";
 
 // ** Hook
 import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
 import useGetMethod from "@/hooks/common/useGetMethod.ts";
 
-// ** Type
-import type {ICategory, IComic, IUpdated} from "@/types/backend";
-
-// ** Services
+// ** Service
 import {ComicService} from "@/services/comic";
 import {OtruyenService} from "@/services/otruyen";
-import {useEffect} from "react";
+
+// ** Config
+import {CONFIG_QUERY_KEY} from "@/configs/query-key";
+
+// ** Type
+import type {ICategory, IComic, IUpdated} from "@/types/backend";
 
 export type TRankingUpdateForm = z.infer<typeof formSchema>;
 
@@ -174,7 +177,7 @@ const RankingUpdate = ({id, onSuccess}: TRankingUpdate) => {
         onSuccess?.();
     };
 
-    if (isComicLoading) return 'Đang tải truyện...';
+    if (isComicLoading) return <RankingUpdateFormSkeleton />;
     if (!comic) return 'Không tìm thấy thông tin truyện.';
 
     return (
