@@ -1,21 +1,34 @@
-import {flexRender, getCoreRowModel, getSortedRowModel, useReactTable, type ColumnDef} from "@tanstack/react-table"
-import type {TQueryParams, TRangeFilter} from "@/hooks/common/useDataTable"
-import {useDataTable} from "@/hooks/common/useDataTable"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import Button from "@/components/common/Button";
+// ** React
+import { type ReactNode, useState } from "react";
+
+// ** Library
+import { flexRender, getCoreRowModel, getSortedRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table";
+
+// ** Icon
+import { Columns2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, ArchiveRestore } from "lucide-react";
+
+// ** Shadcn ui
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx";
+import { Input } from "@/components/ui/input.tsx";
 import {
     DropdownMenu, DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuLabel, DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx";
+import { Skeleton } from "@/components/ui/skeleton";
 
-import {Columns2, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Trash2, ArchiveRestore} from "lucide-react";
-import {type ReactNode, useState} from "react";
+// ** Component
+import Button from "@/components/common/Button";
 import ExportButton from "@/components/common/ExportButton";
 import DialogActionBtn from "@/components/common/DialogActionBtn";
+
+// ** Hook
+import { useDataTable } from "@/hooks/common/useDataTable";
+
+// ** Type
+import type { TQueryParams, TRangeFilter } from "@/hooks/common/useDataTable";
 
 type TDataTableServerProps<T> = {
     queryKey: string
@@ -219,12 +232,7 @@ const DataTableServer = <T, >({
 
                 {/* Table */}
                 <div className="rounded-md border relative">
-                    {isLoading && (
-                        <div
-                            className="absolute inset-0 bg-background/50 flex items-center justify-center z-10 rounded-md">
-                            <span className="text-sm text-muted-foreground">Đang tải...</span>
-                        </div>
-                    )}
+
                     <Table>
                         <TableHeader>
                             {table.getHeaderGroups().map((hg) => (
@@ -241,7 +249,17 @@ const DataTableServer = <T, >({
                             ))}
                         </TableHeader>
                         <TableBody>
-                            {table.getRowModel().rows?.length ? (
+                            {isLoading ? (
+                                Array.from({ length: 5 }).map((_, rowIndex) => (
+                                    <TableRow key={`skeleton-row-${rowIndex}`}>
+                                        {columns.map((_, colIndex) => (
+                                            <TableCell key={`skeleton-cell-${rowIndex}-${colIndex}`}>
+                                                <Skeleton className="h-5 w-full max-w-[120px]" />
+                                            </TableCell>
+                                        ))}
+                                    </TableRow>
+                                ))
+                            ) : table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                                         {row.getVisibleCells().map((cell) => (
@@ -252,13 +270,11 @@ const DataTableServer = <T, >({
                                     </TableRow>
                                 ))
                             ) : (
-                                !isLoading && (
-                                    <TableRow>
-                                        <TableCell colSpan={columns.length} className="h-24 text-center">
-                                            Không có dữ liệu.
-                                        </TableCell>
-                                    </TableRow>
-                                )
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                        Không có dữ liệu.
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </TableBody>
                     </Table>
