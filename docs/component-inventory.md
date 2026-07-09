@@ -78,8 +78,19 @@ Feature modules encapsulate domain-specific business logic, table column definit
 
 ---
 
-## 4. Reusability & Styling Patterns
+## 4. Custom Page Skeletons (`src/skeletons/`)
+
+To provide polished, layout-stable loading states during server-side queries, the dashboard implements custom page skeletons:
+* **`OverviewCardsSkeleton`**: Simulates the 4-column metric cards grid with matching dimensions and loading pulses.
+* **`RegistrationsChartSkeleton`**: Simulates the registrations bar chart with staggered layout heights.
+* **`DemographicsChartSkeleton`**: Renders a circular pulsing skeleton matching the radial demographics chart.
+* **`TopListSkeleton`**: Renders structured row lists with index indicator and count placeholders, used for top genres and top comics lists.
+
+---
+
+## 5. Reusability & Styling Patterns
 
 * **Tailwind CSS v4 (`src/styles/index.css`)**: Utilizes modern CSS variables and utility-first styling without runtime CSS-in-JS overhead.
 * **Class Merging (`src/lib/utils.ts`)**: Every component utilizes the `cn()` helper function (combining `clsx` and `tailwind-merge`) to allow parent components to safely override or extend utility classes without specificity conflicts.
 * **Variant Management (`class-variance-authority`)**: Components like Buttons and Badges define strict visual variants (e.g., `variant: "destructive" | "outline" | "ghost"`) and sizes, guaranteeing visual consistency across the entire admin dashboard.
+
