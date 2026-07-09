@@ -229,7 +229,7 @@ export interface IDashboardDemographic {
 }
 
 export interface IDashboardTopGenre {
-    genre_name: string;
+    genre: string;
     count: number;
 }
 
