@@ -5,7 +5,7 @@ import {type QueryKey, useQuery} from "@tanstack/react-query";
 import { handleResponse } from "@/utils/handleResponse.ts";
 
 type TUseGetMethod<TData> = {
-    api: () => Promise<IBackendRes<TData>>;
+    api: (signal?: AbortSignal) => Promise<IBackendRes<TData>>;
     key: QueryKey;
     enabled?: boolean;
 };
@@ -17,8 +17,8 @@ const useGetMethod = <TData>({
                              }: TUseGetMethod<TData>) => {
     return useQuery<IBackendRes<TData>, BackendError>({
         queryKey: key,
-        queryFn: async () => {
-            const res = await api();
+        queryFn: async ({ signal }) => {
+            const res = await api(signal);
             return handleResponse(res);
         },
         enabled,
