@@ -1,8 +1,14 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FilterBar } from "@/modules/Dashboard/components/FilterBar";
+import { OverviewCards } from "@/modules/Dashboard/components/OverviewCards";
 import useGetMethod from "@/hooks/common/useGetMethod";
 import { DashboardService } from "@/services/dashboard";
 import { CONFIG_QUERY_KEY } from "@/configs/query-key";
+import { format } from "date-fns";
+import { vi } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
+import { RotateCcw } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 export default function DashboardStatistics() {
     // Overview filter state
@@ -38,7 +44,13 @@ export default function DashboardStatistics() {
             ),
         [overviewDateRange.from, overviewDateRange.to]
     );
-    const { data: overviewData } = useGetMethod({
+    const {
+        data: overviewData,
+        isLoading: isOverviewLoading,
+        isError: isOverviewError,
+        error: overviewError,
+        refetch: refetchOverview,
+    } = useGetMethod({
         api: overviewApi,
         key: [
             CONFIG_QUERY_KEY.DASHBOARD.OVERVIEW,
@@ -48,6 +60,12 @@ export default function DashboardStatistics() {
             },
         ],
     });
+
+    useEffect(() => {
+        if (isOverviewError && overviewError) {
+            toast.error("Không thể tải số liệu tổng quan.");
+        }
+    }, [isOverviewError, overviewError]);
 
     // Registrations Query: dependent on registrationsDateRange and registrationsGranularity
     const registrationsApi = useCallback(
@@ -62,7 +80,7 @@ export default function DashboardStatistics() {
             ),
         [registrationsDateRange.from, registrationsDateRange.to, registrationsGranularity]
     );
-    const { data: registrationsData } = useGetMethod({
+    useGetMethod({
         api: registrationsApi,
         key: [
             CONFIG_QUERY_KEY.DASHBOARD.REGISTRATIONS,
@@ -75,33 +93,78 @@ export default function DashboardStatistics() {
     });
 
     // Demographics Query: ignores date range
-    const { data: demographicsData } = useGetMethod({
+    useGetMethod({
         api: (signal) => DashboardService.demographics(signal),
         key: [CONFIG_QUERY_KEY.DASHBOARD.DEMOGRAPHICS],
     });
 
     // Top Genres Query: ignores date range
-    const { data: topGenresData } = useGetMethod({
+    useGetMethod({
         api: (signal) => DashboardService.topGenres({ limit }, signal),
         key: [CONFIG_QUERY_KEY.DASHBOARD.TOP_GENRES, { limit }],
     });
 
     // Top Comics Query: ignores date range
-    const { data: topComicsData } = useGetMethod({
+    useGetMethod({
         api: (signal) => DashboardService.topComics({ limit }, signal),
         key: [CONFIG_QUERY_KEY.DASHBOARD.TOP_COMICS, { limit }],
     });
 
+    const hasActiveFilters =
+        overviewDateRange.from !== undefined ||
+        overviewDateRange.to !== undefined ||
+        registrationsDateRange.from !== undefined ||
+        registrationsDateRange.to !== undefined ||
+        registrationsGranularity !== "day";
+
+    const handleResetFilters = () => {
+        setOverviewDateRange({ from: undefined, to: undefined });
+        setRegistrationsDateRange({ from: undefined, to: undefined });
+        setRegistrationsGranularity("day");
+    };
+
+    const generatedAt = overviewData?.data?.meta?.generated_at;
+    let generatedAtStr = "";
+    if (generatedAt) {
+        const parsedDate = new Date(generatedAt);
+        if (!isNaN(parsedDate.getTime())) {
+            generatedAtStr = format(parsedDate, "HH:mm:ss dd/MM/yyyy", { locale: vi });
+        }
+    }
+
     return (
         <div className="space-y-6 p-0 md:p-2">
             {/* Page Title */}
-            <div>
-                <h1 className="text-[28px] font-bold tracking-[-0.02em] text-foreground">
-                    Tổng quan thống kê
-                </h1>
-                <p className="text-muted-foreground text-sm mt-1">
-                    Xem báo cáo hoạt động và thống kê hệ thống của ZTruyện
-                </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 className="text-[28px] font-bold tracking-[-0.02em] text-foreground">
+                        Tổng quan thống kê
+                    </h1>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
+                        <p className="text-muted-foreground text-sm">
+                            Xem báo cáo hoạt động và thống kê hệ thống của ZTruyện
+                        </p>
+                        {generatedAtStr && (
+                            <>
+                                <span className="hidden sm:inline text-muted-foreground/40 text-xs">•</span>
+                                <p className="text-muted-foreground text-xs">
+                                    Số liệu tính đến: {generatedAtStr}
+                                </p>
+                            </>
+                        )}
+                    </div>
+                </div>
+                {hasActiveFilters && (
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleResetFilters}
+                        className="h-9 px-3 gap-2 text-muted-foreground hover:text-foreground self-start sm:self-auto animate-in fade-in duration-200"
+                    >
+                        <RotateCcw className="h-4 w-4" />
+                        Đặt lại bộ lọc
+                    </Button>
+                )}
             </div>
 
             {/* Overview Filter Bar */}
@@ -114,15 +177,12 @@ export default function DashboardStatistics() {
 
             {/* Overview Cards Grid — 1 col mobile / 2 col tablet / 4 col desktop */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Slots for overview stat cards (Epic 2) */}
-                {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                        key={i}
-                        className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-h-[120px] flex items-center justify-center text-muted-foreground text-sm"
-                    >
-                        Card {i + 1}
-                    </div>
-                ))}
+                <OverviewCards
+                    data={overviewData?.data?.data}
+                    isLoading={isOverviewLoading}
+                    isError={isOverviewError}
+                    refetch={refetchOverview}
+                />
             </div>
 
             {/* Charts Grid — 1 col mobile / 2/3 + 1/3 desktop */}
