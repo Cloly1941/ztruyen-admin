@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -32,10 +32,17 @@ export function FilterBar({
         to: dateRange.to,
     });
 
-    // Sync local state when external dateRange prop changes
-    useEffect(() => {
+    const [prevFrom, setPrevFrom] = useState<Date | undefined>(dateRange.from);
+    const [prevTo, setPrevTo] = useState<Date | undefined>(dateRange.to);
+
+    const isFromChanged = dateRange.from?.getTime() !== prevFrom?.getTime();
+    const isToChanged = dateRange.to?.getTime() !== prevTo?.getTime();
+
+    if (isFromChanged || isToChanged) {
+        setPrevFrom(dateRange.from);
+        setPrevTo(dateRange.to);
         setLocalRange({ from: dateRange.from, to: dateRange.to });
-    }, [dateRange.from, dateRange.to]);
+    }
 
     const handleSelect = (range: DateRange | undefined) => {
         setLocalRange(range);

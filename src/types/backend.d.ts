@@ -204,14 +204,18 @@ export interface IGuide {
 }
 
 // Dashboard
+export interface IDashboardRes<T> {
+    data: T;
+    meta?: {
+        generated_at: string;
+    };
+}
+
 export interface IDashboardOverview {
     total_users: number;
     new_users_current_period: number;
-    new_users_growth_percent: number;
+    new_users_growth_percent: number | null;
     total_favorites: number;
-    meta: {
-        generated_at: string;
-    };
 }
 
 export interface IDashboardRegistration {
