@@ -1,13 +1,24 @@
+// ** React
 import * as React from "react";
+
+// ** Recharts
 import { PieChart, Pie, Cell } from "recharts";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+
+// ** Icon
 import { AlertCircle } from "lucide-react";
+
+// ** Shadcn ui
+import { Button } from "@/components/ui/button";
 import {
     AppChartContainer,
     AppChartTooltip,
     AppChartTooltipContent
 } from "@/components/custom-ui/chart";
+
+// ** Component
+import { DemographicsChartSkeleton } from "@/skeletons/pages/dashboard";
+
+// ** Type
 import type { ChartConfig } from "@/components/custom-ui/chart";
 import type { IDashboardDemographic } from "@/types/backend";
 
@@ -61,9 +72,7 @@ export function DemographicsChart({ data, isLoading, isError, refetch }: Demogra
             {/* Content Area */}
             <div className="flex-1 w-full min-w-0 h-full min-h-0 relative flex flex-col justify-between">
                 {isLoading ? (
-                    <div className="absolute inset-0 flex items-center justify-center pt-6">
-                        <Skeleton className="h-44 w-44 rounded-full animate-pulse" />
-                    </div>
+                    <DemographicsChartSkeleton />
                 ) : isError ? (
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center space-y-3">
                         <div className="p-2.5 bg-destructive/10 rounded-full text-destructive">

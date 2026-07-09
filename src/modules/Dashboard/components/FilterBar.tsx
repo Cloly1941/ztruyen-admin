@@ -1,13 +1,21 @@
+// ** React
 import { useState } from "react";
+
+// ** Date
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
+// ** Icon
+import { CalendarIcon } from "lucide-react";
+
+// ** Shadcn ui
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// ** Utils
+import { cn } from "@/lib/utils";
 
 interface FilterBarProps {
     dateRange: { from: Date | undefined; to: Date | undefined };

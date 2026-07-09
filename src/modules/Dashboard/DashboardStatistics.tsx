@@ -1,21 +1,40 @@
+// ** React
 import { useCallback, useEffect, useState } from "react";
+
+// ** Date
+import { format, subDays } from "date-fns";
+import { vi } from "date-fns/locale";
+import type { DateRange } from "react-day-picker";
+
+// ** Icon
+import { RotateCcw, CalendarIcon } from "lucide-react";
+
+// ** Library
+import { toast } from "react-hot-toast";
+
+// ** Shadcn ui
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+// ** Component
 import { OverviewCards } from "@/modules/Dashboard/components/OverviewCards";
 import { RegistrationsChart } from "@/modules/Dashboard/components/RegistrationsChart";
 import { DemographicsChart } from "@/modules/Dashboard/components/DemographicsChart";
 import { TopGenresList } from "@/modules/Dashboard/components/TopGenresList";
 import { TopComicsList } from "@/modules/Dashboard/components/TopComicsList";
+
+// ** Hook
 import useGetMethod from "@/hooks/common/useGetMethod";
+
+// ** Service
 import { DashboardService } from "@/services/dashboard";
+
+// ** Config
 import { CONFIG_QUERY_KEY } from "@/configs/query-key";
-import { format, subDays } from "date-fns";
-import { vi } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
-import { RotateCcw, CalendarIcon } from "lucide-react";
-import { toast } from "react-hot-toast";
-import type { DateRange } from "react-day-picker";
+
+// ** Utils
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const getDefaultRange = () => {
     const to = new Date();
