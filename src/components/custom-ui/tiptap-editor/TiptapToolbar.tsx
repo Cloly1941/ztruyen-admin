@@ -27,6 +27,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button, buttonVariants } from "@/components/ui/button";
 
+// ** Component
+import { LinkDialog } from "./LinkDialog";
+import { ImageDialog } from "./ImageDialog";
+
 // ** Lib
 import { cn } from "@/lib/utils";
 
@@ -153,6 +157,8 @@ const HeadingDropdown = ({ editor }: { editor: Editor }) => {
 
 export const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [linkDialogOpen, setLinkDialogOpen] = React.useState(false);
+  const [imageDialogOpen, setImageDialogOpen] = React.useState(false);
 
   if (!editor) return null;
 
@@ -241,9 +247,13 @@ export const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
         <div className="w-px h-4 bg-border mx-1" />
 
         <ToolbarButton
+          active={editor.isActive("link")}
           onClick={(e) => {
             e.preventDefault();
-            // TODO: Hyperlink dialog triggers in Story 1.3
+            if (editor.isActive("link")) {
+              editor.chain().focus().extendMarkRange("link").run();
+            }
+            setLinkDialogOpen(true);
           }}
           title="Chèn liên kết"
         >
@@ -253,7 +263,7 @@ export const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
         <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
-            // TODO: Image upload dialog triggers in Story 1.3
+            setImageDialogOpen(true);
           }}
           title="Chèn hình ảnh"
         >
@@ -329,10 +339,14 @@ export const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
             {/* Group Actions */}
             <div className="flex items-center justify-around p-1">
               <ToolbarButton
+                active={editor.isActive("link")}
                 onClick={(e) => {
                   e.preventDefault();
                   runMobileAction(() => {
-                    // TODO: Hyperlink dialog triggers in Story 1.3
+                    if (editor.isActive("link")) {
+                      editor.chain().focus().extendMarkRange("link").run();
+                    }
+                    setLinkDialogOpen(true);
                   });
                 }}
                 title="Chèn liên kết"
@@ -343,7 +357,7 @@ export const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
                 onClick={(e) => {
                   e.preventDefault();
                   runMobileAction(() => {
-                    // TODO: Image upload dialog triggers in Story 1.3
+                    setImageDialogOpen(true);
                   });
                 }}
                 title="Chèn hình ảnh"
@@ -354,6 +368,17 @@ export const TiptapToolbar: React.FC<TiptapToolbarProps> = ({ editor }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <LinkDialog
+        open={linkDialogOpen}
+        onOpenChange={setLinkDialogOpen}
+        editor={editor}
+      />
+      <ImageDialog
+        open={imageDialogOpen}
+        onOpenChange={setImageDialogOpen}
+        editor={editor}
+      />
     </div>
   );
 };
