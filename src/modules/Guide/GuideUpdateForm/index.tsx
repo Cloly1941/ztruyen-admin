@@ -27,6 +27,7 @@ import {
 // ** Component
 import Button from "@/components/common/Button";
 import {GuideUpdateFormSkeleton} from "@/skeletons/pages/guide";
+import TiptapEditor from "@/components/custom-ui/tiptap-editor";
 
 // ** Hook
 import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
@@ -165,12 +166,11 @@ const GuideUpdate = ({id, onSuccess}: TGuideUpdate) => {
                         <FieldLabel htmlFor="form-update-guide-content">
                             Nội dung
                         </FieldLabel>
-                        <Textarea
-                            {...field}
-                            id="form-update-guide-content"
+                        <TiptapEditor
+                            value={field.value}
+                            onChange={field.onChange}
                             placeholder="Nhập nội dung"
-                            rows={4}
-                            aria-invalid={fieldState.invalid}
+                            disabled={isPending}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]}/>

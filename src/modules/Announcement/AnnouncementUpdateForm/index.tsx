@@ -15,7 +15,6 @@ import toast from "react-hot-toast";
 import {DialogClose, DialogFooter} from "@/components/ui/dialog";
 import {Field, FieldError, FieldLabel} from "@/components/ui/field";
 import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
@@ -27,6 +26,7 @@ import {
 // ** Component
 import Button from "@/components/common/Button";
 import {AnnouncementUpdateFormSkeleton} from "@/skeletons/pages/announcement";
+import TiptapEditor from "@/components/custom-ui/tiptap-editor";
 
 // ** Hook
 import usePatchMethod from "@/hooks/common/usePatchMethod.ts";
@@ -42,9 +42,14 @@ import {CONFIG_QUERY_KEY} from "@/configs/query-key";
 import type {IAnnouncement, IUpdated, TTypeAnnouncement} from "@/types/backend";
 import {ANNOUNCEMENT_TYPE_OPTIONS} from "@/modules/Announcement/AnnouncementCreateForm";
 
+// ** Utils
+import { isContentEmpty } from "@/utils/isContentEmpty";
+
 export const formSchema = z.object({
     title: z.string().min(1, "Tiêu đề không được để trống"),
-    content: z.string().min(1, "Nội dung không được để trống"),
+    content: z.string().refine((val) => !isContentEmpty(val), {
+        message: "Nội dung không được để trống.",
+    }),
     type: z.enum(["info", "warning", "maintenance", "event"]),
 });
 
@@ -146,12 +151,11 @@ const AnnouncementUpdate = ({id, onSuccess}: TAnnouncementUpdate) => {
                         <FieldLabel htmlFor="form-update-announcement-content">
                             Nội dung
                         </FieldLabel>
-                        <Textarea
-                            {...field}
-                            id="form-update-announcement-content"
+                        <TiptapEditor
+                            value={field.value}
+                            onChange={field.onChange}
                             placeholder="Nhập nội dung thông báo"
-                            rows={4}
-                            aria-invalid={fieldState.invalid}
+                            disabled={isPending}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]}/>

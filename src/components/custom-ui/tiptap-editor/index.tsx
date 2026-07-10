@@ -5,15 +5,22 @@ import React, { useEffect } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Placeholder from "@tiptap/extension-placeholder";
-import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
 import toast from "react-hot-toast";
 
 // ** Component
 import TiptapToolbar from "./TiptapToolbar";
 
 // ** Extension
-import { CustomParagraph, CustomHeading, CustomTextAlign } from "./custom-extensions";
+import {
+  CustomParagraph,
+  CustomHeading,
+  CustomTextAlign,
+  CustomBulletList,
+  CustomOrderedList,
+  CustomListItem,
+  CustomLink,
+  CustomImage,
+} from "./custom-extensions";
 
 // ** Lib
 import { cn } from "@/lib/utils";
@@ -47,27 +54,29 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
       StarterKit.configure({
         paragraph: false,
         heading: false,
+        bulletList: false,
+        orderedList: false,
+        listItem: false,
       }),
       CustomParagraph,
       CustomHeading,
+      CustomBulletList,
+      CustomOrderedList,
+      CustomListItem,
       CustomTextAlign.configure({
         types: ["paragraph", "heading"],
       }),
       Placeholder.configure({
         placeholder,
       }),
-      Link.configure({
+      CustomLink.configure({
         openOnClick: false,
         HTMLAttributes: {
           target: "_blank",
           rel: "noopener noreferrer",
         },
       }),
-      Image.configure({
-        HTMLAttributes: {
-          class: "rounded-md shadow-sm max-w-full h-auto",
-        },
-      }),
+      CustomImage,
     ],
     content: value,
     editable: !disabled,
@@ -150,7 +159,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     <div
       className={cn(
         "w-full rounded-md border border-input bg-background shadow-sm focus-within:ring-1 focus-within:ring-ring transition-colors flex flex-col",
-        disabled && "opacity-50 cursor-not-allowed bg-muted"
+        disabled && "opacity-50 cursor-not-allowed bg-muted pointer-events-none"
       )}
     >
       <TiptapToolbar editor={editor} />

@@ -7,6 +7,10 @@ import DOMPurify from "dompurify";
 // ** Lib
 import { cn } from "@/lib/utils";
 
+// ** Utils
+import { filterTailwindClasses } from "@/utils/filterTailwindClasses";
+
+
 export interface ContentRendererProps {
   htmlContent: string;
   className?: string;
@@ -31,14 +35,10 @@ if (typeof window !== "undefined") {
 
     // Filter class names with direction/spacing suffix matching
     if (node.hasAttribute("class")) {
-      const classes = node.getAttribute("class")?.split(/\s+/) || [];
-      const allowed = classes.filter((cls) => {
-        const isAllowed = /^(text|font|bg|p[xytrbl]?|m[xytrbl]?|rounded|shadow|w|h|max-w|leading|tracking|border)(-|$)/.test(cls);
-        const isForbidden = /^(fixed|absolute|z-|w-screen|h-screen|inset-)/.test(cls);
-        return isAllowed && !isForbidden;
-      });
-      if (allowed.length > 0) {
-        node.setAttribute("class", allowed.join(" "));
+      const rawClass = node.getAttribute("class") || "";
+      const cleanClass = filterTailwindClasses(rawClass, false);
+      if (cleanClass) {
+        node.setAttribute("class", cleanClass);
       } else {
         node.removeAttribute("class");
       }

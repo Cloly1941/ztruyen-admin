@@ -6,6 +6,7 @@ import {z} from "zod";
 
 // ** Component
 import Button from "@/components/common/Button";
+import TiptapEditor from "@/components/custom-ui/tiptap-editor";
 
 // ** Services
 import {GuideService} from "@/services/guide";
@@ -35,6 +36,9 @@ import usePostMethod from "@/hooks/common/usePostMethod.ts";
 // ** Type
 import type {ICreated, TPlatform} from "@/types/backend";
 
+// ** Utils
+import { isContentEmpty } from "@/utils/isContentEmpty";
+
 
 export const PlATFORM_OPTIONS: { value: TPlatform; label: string }[] =
     [
@@ -47,7 +51,9 @@ export const PlATFORM_OPTIONS: { value: TPlatform; label: string }[] =
 export const formSchema = z.object({
     title: z.string().min(1, "Tiêu đề không được để trống"),
     description: z.string().min(1, "Nội dung mô tả không được để trống"),
-    content: z.string().min(1, "Nội dung không được để trống"),
+    content: z.string().refine((val) => !isContentEmpty(val), {
+        message: "Nội dung không được để trống.",
+    }),
     platform: z.enum(["IOS", "PC", "Android", "None"]),
 });
 
@@ -74,6 +80,7 @@ const GuideCreate = ({onSuccess}: TGuideCreate) => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             title: "",
+            description: "",
             content: "",
             platform: "None",
         },
@@ -148,12 +155,11 @@ const GuideCreate = ({onSuccess}: TGuideCreate) => {
                         <FieldLabel htmlFor="form-create-guide-content">
                             Nội dung
                         </FieldLabel>
-                        <Textarea
-                            {...field}
-                            id="form-create-guide-content"
-                            placeholder="Nhập nội dung thông báo"
-                            rows={4}
-                            aria-invalid={fieldState.invalid}
+                        <TiptapEditor
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Nhập nội dung"
+                            disabled={isPending}
                         />
                         {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]}/>
