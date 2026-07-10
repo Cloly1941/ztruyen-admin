@@ -32,3 +32,4 @@ _bmad-output/
 # IDE-specific AI agent configs
 .agent/
 .claude/
+.agents/skills/bmad*

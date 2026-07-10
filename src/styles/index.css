@@ -126,4 +126,10 @@
         pointer-events: none;
         height: 0;
     }
+
+    /* Tiptap text alignments overrides for prose */
+    .prose .text-left, .tiptap .text-left, .prose p.text-left, .prose h1.text-left, .prose h2.text-left, .prose h3.text-left, .prose h4.text-left { text-align: left; }
+    .prose .text-center, .tiptap .text-center, .prose p.text-center, .prose h1.text-center, .prose h2.text-center, .prose h3.text-center, .prose h4.text-center { text-align: center; }
+    .prose .text-right, .tiptap .text-right, .prose p.text-right, .prose h1.text-right, .prose h2.text-right, .prose h3.text-right, .prose h4.text-right { text-align: right; }
+    .prose .text-justify, .tiptap .text-justify, .prose p.text-justify, .prose h1.text-justify, .prose h2.text-justify, .prose h3.text-justify, .prose h4.text-justify { text-align: justify; }
 }
